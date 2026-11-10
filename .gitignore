@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+venv*/
+.venv/
+
+# Local configuration and logs
+.env
+*.log
+
+# Generated/local data
+*.db
+output/
+tmp/
+downloads/
+
+# Large model and dataset artifacts
+*.safetensors
+*.pt
+*.pth
+*.onnx
+datasets/
+**/datasets/
+**/bigvul*/
+**/csic_database.csv/
+
+# Editor/OS noise
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

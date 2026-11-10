@@ -1,0 +1,6 @@
+# Optional: install this only if you want ML fallback scanning.
+# The app still runs without these packages and uses pattern-based detection.
+-r requirements.txt
+torch
+transformers
+safetensors
