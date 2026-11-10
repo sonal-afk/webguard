@@ -1,0 +1,156 @@
+{
+  "hardware": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD"
+  },
+  "dataset": {
+    "n": 672
+  },
+  "overall": {
+    "pattern": {
+      "tp": 324,
+      "tn": 336,
+      "fp": 0,
+      "fn": 12,
+      "precision": 1.0,
+      "recall": 0.9643,
+      "f1": 0.9818,
+      "accuracy": 0.9821,
+      "n": 672
+    },
+    "ml": {
+      "tp": 326,
+      "tn": 336,
+      "fp": 0,
+      "fn": 10,
+      "precision": 1.0,
+      "recall": 0.9702,
+      "f1": 0.9849,
+      "accuracy": 0.9851,
+      "n": 672
+    },
+    "hybrid": {
+      "tp": 336,
+      "tn": 336,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "accuracy": 1.0,
+      "n": 672
+    }
+  },
+  "by_variant": {
+    "canonical": {
+      "pattern": {
+        "tp": 108,
+        "tn": 336,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1.0,
+        "recall": 0.9643,
+        "f1": 0.9818,
+        "accuracy": 0.9911,
+        "n": 448
+      },
+      "ml": {
+        "tp": 108,
+        "tn": 336,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1.0,
+        "recall": 0.9643,
+        "f1": 0.9818,
+        "accuracy": 0.9911,
+        "n": 448
+      },
+      "hybrid": {
+        "tp": 112,
+        "tn": 336,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "n": 448
+      }
+    },
+    "case_whitespace_mangled": {
+      "pattern": {
+        "tp": 108,
+        "tn": 336,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1.0,
+        "recall": 0.9643,
+        "f1": 0.9818,
+        "accuracy": 0.9911,
+        "n": 448
+      },
+      "ml": {
+        "tp": 108,
+        "tn": 336,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1.0,
+        "recall": 0.9643,
+        "f1": 0.9818,
+        "accuracy": 0.9911,
+        "n": 448
+      },
+      "hybrid": {
+        "tp": 112,
+        "tn": 336,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "n": 448
+      }
+    },
+    "percent_encoded": {
+      "pattern": {
+        "tp": 108,
+        "tn": 336,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1.0,
+        "recall": 0.9643,
+        "f1": 0.9818,
+        "accuracy": 0.9911,
+        "n": 448
+      },
+      "ml": {
+        "tp": 110,
+        "tn": 336,
+        "fp": 0,
+        "fn": 2,
+        "precision": 1.0,
+        "recall": 0.9821,
+        "f1": 0.991,
+        "accuracy": 0.9955,
+        "n": 448
+      },
+      "hybrid": {
+        "tp": 112,
+        "tn": 336,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "n": 448
+      }
+    }
+  },
+  "latency_ms": {
+    "pattern": 0.1838,
+    "ml": 19.0681,
+    "hybrid": 13.1406
+  }
+}

@@ -1,0 +1,1528 @@
+text,label,category,cwe,variant,base_payload
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=../../../../EtC/PaSsWd",1,Path Traversal,CWE-22,case_whitespace_mangled,../../../../etc/passwd
+https://shop.example.com/item?id=' UNION SELECT NULL--&ref=home,1,SQL Injection,CWE-89,canonical,' UNION SELECT NULL--
+"GET /profile?user=%2e%2e%2f%2e%2e%2fetc%2fpasswd HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,canonical,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=file:///etc/passwd",1,SSRF,CWE-918,canonical,file:///etc/passwd
+"POST /dashboard?category=health&page=13 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /contact?category=electronics&page=5 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/help?page=28&sort=price_asc,0,benign,-,canonical,
+https://cdn.site.org/user/profile?page=51&sort=name_asc,0,benign,-,canonical,
+https://example.com/search?q=',1,SQL Injection,CWE-89,case_whitespace_mangled,'
+"POST /home?category=toys&page=5 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /about?category=clothing&page=19 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"POST /user/profile?category=sports&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/settings?page=45&sort=name_asc,0,benign,-,canonical,
+"GET /profile?user=<sCrIpT>WeBgUaRd_xSs_tEsT</sCrIpT> HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,case_whitespace_mangled,<script>webguard_xss_test</script>
+https://app.service.com/home?page=79&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=..%2F..%2F..%2F..%2Fetc%2Fpasswd&ref=home,1,Path Traversal,CWE-22,percent_encoded,../../../../etc/passwd
+https://app.service.com/products?page=100&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=%7Cecho%20webguard_cmd_test&ref=home,1,Command Injection,CWE-78,percent_encoded,|echo webguard_cmd_test
+"GET /api/data?category=clothing&page=5 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://portal.company.com/contact?page=8&sort=price_asc,0,benign,-,canonical,
+"GET /home?category=electronics&page=14 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"POST /dashboard?category=books&page=4 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/help?page=43&sort=price_desc,0,benign,-,canonical,
+"https://shop.example.com/item?id=api_key=""AKIA1234567890ABCDEF""&ref=home",1,Hardcoded Credentials,CWE-798,canonical,"api_key=""AKIA1234567890ABCDEF"""
+https://example.com/search?q=<sCrIpT>WeBgUaRd_xSs_tEsT</sCrIpT>,1,XSS,CWE-79,case_whitespace_mangled,<script>webguard_xss_test</script>
+"POST /search?category=health&page=18 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"https://example.com/search?q=api_key=""AKIA1234567890ABCDEF""",1,Hardcoded Credentials,CWE-798,canonical,"api_key=""AKIA1234567890ABCDEF"""
+https://shop.example.com/item?id=&&echo webguard_cmd_test&ref=home,1,Command Injection,CWE-78,canonical,&&echo webguard_cmd_test
+https://example.com/search?q=' OR '1'='1,1,SQL Injection,CWE-89,canonical,' OR '1'='1
+"GET /profile?user=' UNION SELECT NULL-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,' UNION SELECT NULL--
+https://shop.com/products?page=70&sort=name_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=<iMg  /**/ sRc=x  /**/ oNeRrOr=wEbGuArD_XsS_TeSt>&ref=home,1,XSS,CWE-79,case_whitespace_mangled,<img src=x onerror=webguard_xss_test>
+"GET /search?category=sports&page=8 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/user/profile?page=3&sort=popular,0,benign,-,canonical,
+https://news.io/help?page=77&sort=price_asc,0,benign,-,canonical,
+https://api.example.com/help?page=88&sort=price_desc,0,benign,-,canonical,
+https://example.com/search?q=http%3A%2F%2F127.0.0.1%3A6379%2F,1,SSRF,CWE-918,percent_encoded,http://127.0.0.1:6379/
+"GET /home?category=clothing&page=7 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"https://example.com/search?q=ApI_KeY=""AKIA1234567890ABCDEF""",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"api_key=""AKIA1234567890ABCDEF"""
+https://shop.example.com/item?id=password%3D%22Sup3rSecretPassw0rd%21%22&ref=home,1,Hardcoded Credentials,CWE-798,percent_encoded,"password=""Sup3rSecretPassw0rd!"""
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=file%3A%2F%2F%2Fetc%2Fpasswd",1,SSRF,CWE-918,percent_encoded,file:///etc/passwd
+"POST /help?category=sports&page=3 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=password=""Sup3rSecretPassw0rd!""",1,Hardcoded Credentials,CWE-798,canonical,"password=""Sup3rSecretPassw0rd!"""
+"GET /profile?user=..\..\..\windows\system32\drivers\etc\hosts HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,canonical,..\..\..\windows\system32\drivers\etc\hosts
+"GET /contact?category=sports&page=20 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/about?page=41&sort=popular,0,benign,-,canonical,
+https://app.service.com/about?page=45&sort=name_asc,0,benign,-,canonical,
+https://shop.com/search?page=38&sort=newest,0,benign,-,canonical,
+"POST /user/profile?category=sports&page=14 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=JaVaScRiPt:wEbGuArD_XsS_TeSt HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,case_whitespace_mangled,javascript:webguard_xss_test
+"GET /profile?user={% print(7*7) %} HTTP/1.1
+Host: app.example.com
+",1,SSTI,CWE-94,canonical,{% print(7*7) %}
+https://shop.com/products?page=41&sort=newest,0,benign,-,canonical,
+https://example.com/search?q='  /**/ OR  /**/ '1'='1,1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1
+https://app.service.com/about?page=57&sort=price_desc,0,benign,-,canonical,
+"GET /profile?user=' HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,'
+"POST /search?category=books&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /dashboard?category=food&page=15 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=1  /**/ WAITFOR  /**/ DELAY  /**/ '0:0:3'--,1,SQL Injection,CWE-89,case_whitespace_mangled,1 WAITFOR DELAY '0:0:3'--
+https://shop.example.com/item?id={{7*7}}&ref=home,1,SSTI,CWE-94,case_whitespace_mangled,{{7*7}}
+https://blog.com/search?page=24&sort=price_desc,0,benign,-,canonical,
+https://shop.com/api/data?page=75&sort=popular,0,benign,-,canonical,
+UPDATE users SET last_login = NOW() WHERE id = 42,0,benign,-,canonical,
+https://portal.company.com/about?page=81&sort=newest,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=javascript%3Awebguard_xss_test",1,XSS,CWE-79,percent_encoded,javascript:webguard_xss_test
+"GET /user/profile?category=clothing&page=11 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1 AND SLEEP(1)",1,SQL Injection,CWE-89,canonical,1 AND SLEEP(1)
+"GET /about?category=toys&page=4 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=1  /**/ AND  /**/ SLEEP(1),1,SQL Injection,CWE-89,case_whitespace_mangled,1 AND SLEEP(1)
+"POST /home?category=books&page=4 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"GET /contact?category=electronics&page=16 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=file:///etc/passwd&ref=home,1,SSRF,CWE-918,canonical,file:///etc/passwd
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=' OR '1'='1'--",1,SQL Injection,CWE-89,canonical,' OR '1'='1'--
+https://portal.company.com/api/data?page=84&sort=newest,0,benign,-,canonical,
+"GET /help?category=sports&page=19 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=gopher%3A%2F%2Finternal%3A70%2F_x,1,SSRF,CWE-918,percent_encoded,gopher://internal:70/_x
+https://example.com/search?q={{7*7}},1,SSTI,CWE-94,case_whitespace_mangled,{{7*7}}
+https://cdn.site.org/about?page=29&sort=newest,0,benign,-,canonical,
+https://shop.example.com/item?id=%3Cimg%20src%3Dx%20onerror%3Dwebguard_xss_test%3E&ref=home,1,XSS,CWE-79,percent_encoded,<img src=x onerror=webguard_xss_test>
+https://shop.example.com/item?id=1%20AND%20SLEEP%281%29&ref=home,1,SQL Injection,CWE-89,percent_encoded,1 AND SLEEP(1)
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=;echo webguard_cmd_test",1,Command Injection,CWE-78,canonical,;echo webguard_cmd_test
+https://app.service.com/contact?page=75&sort=name_asc,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=http://169.254.169.254/latest/meta-data/",1,SSRF,CWE-918,canonical,http://169.254.169.254/latest/meta-data/
+"POST /search?category=health&page=10 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=|echo webguard_cmd_test,1,Command Injection,CWE-78,canonical,|echo webguard_cmd_test
+"GET /profile?user=https%3A%2F%2Fwebguard-evil.example%2F HTTP/1.1
+Host: app.example.com
+",1,Open Redirect,CWE-601,percent_encoded,https://webguard-evil.example/
+https://example.com/search?q=../../../../etc/passwd,1,Path Traversal,CWE-22,canonical,../../../../etc/passwd
+https://news.io/about?page=19&sort=price_asc,0,benign,-,canonical,
+"GET /profile?user=;eChO  /**/ WeBgUaRd_cMd_tEsT HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,case_whitespace_mangled,;echo webguard_cmd_test
+https://example.com/search?q=FiLe:///EtC/PaSsWd,1,SSRF,CWE-918,case_whitespace_mangled,file:///etc/passwd
+https://shop.example.com/item?id=' OR '1'='1&ref=home,1,SQL Injection,CWE-89,canonical,' OR '1'='1
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%3Cimg%20src%3Dx%20onerror%3Dwebguard_xss_test%3E",1,XSS,CWE-79,percent_encoded,<img src=x onerror=webguard_xss_test>
+"GET /profile?user=//webguard-evil.example/ HTTP/1.1
+Host: app.example.com
+",1,Open Redirect,CWE-601,canonical,//webguard-evil.example/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data={%  /**/ pRiNt(7*7)  /**/ %}",1,SSTI,CWE-94,case_whitespace_mangled,{% print(7*7) %}
+https://example.com/search?q={%  /**/ pRiNt(7*7)  /**/ %},1,SSTI,CWE-94,case_whitespace_mangled,{% print(7*7) %}
+"GET /profile?user=http%3A%2F%2F127.0.0.1%3A6379%2F HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,percent_encoded,http://127.0.0.1:6379/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data={{7*7}}",1,SSTI,CWE-94,canonical,{{7*7}}
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>",1,XXE,CWE-611,canonical,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://shop.example.com/item?id=%27%20OR%20%271%27%3D%271%27--&ref=home,1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1'--
+https://portal.company.com/contact?page=10&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=%27%20OR%20%271%27%3D%271,1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1
+"POST /products?category=food&page=3 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=<img src=x onerror=webguard_xss_test>,1,XSS,CWE-79,canonical,<img src=x onerror=webguard_xss_test>
+"GET /profile?user=&&echo webguard_cmd_test HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,canonical,&&echo webguard_cmd_test
+https://example.com/search?q=&&echo webguard_cmd_test,1,Command Injection,CWE-78,canonical,&&echo webguard_cmd_test
+https://portal.company.com/help?page=94&sort=name_asc,0,benign,-,canonical,
+https://news.io/products?page=85&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=webguard_xss_test<b>&ref=home,1,XSS,CWE-79,canonical,webguard_xss_test<b>
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=//WeBgUaRd-eViL.ExAmPlE/",1,Open Redirect,CWE-601,case_whitespace_mangled,//webguard-evil.example/
+https://store.example.com/products?page=45&sort=name_asc,0,benign,-,canonical,
+"POST /api/data?category=toys&page=15 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"https://shop.example.com/item?id=<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>&ref=home",1,XXE,CWE-611,canonical,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+"GET /profile?user=%3Cscript%3Ewebguard_xss_test%3C%2Fscript%3E HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,percent_encoded,<script>webguard_xss_test</script>
+https://example.com/search?q=' OR '1'='1'--,1,SQL Injection,CWE-89,canonical,' OR '1'='1'--
+https://cdn.site.org/settings?page=58&sort=newest,0,benign,-,canonical,
+"GET /help?category=electronics&page=19 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=..\..\..\wInDoWs\sYsTeM32\DrIvErS\EtC\HoStS&ref=home,1,Path Traversal,CWE-22,case_whitespace_mangled,..\..\..\windows\system32\drivers\etc\hosts
+"POST /contact?category=food&page=5 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data={% print(7*7) %}",1,SSTI,CWE-94,canonical,{% print(7*7) %}
+"GET /dashboard?category=books&page=2 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=|eChO  /**/ WeBgUaRd_cMd_tEsT&ref=home,1,Command Injection,CWE-78,case_whitespace_mangled,|echo webguard_cmd_test
+"GET /contact?category=health&page=9 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/about?page=71&sort=name_asc,0,benign,-,canonical,
+"GET /profile?user=../../../../etc/passwd HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,canonical,../../../../etc/passwd
+https://shop.com/api/data?page=51&sort=price_desc,0,benign,-,canonical,
+https://shop.example.com/item?id='&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,'
+https://app.service.com/dashboard?page=79&sort=popular,0,benign,-,canonical,
+"POST /dashboard?category=health&page=13 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=;echo webguard_cmd_test HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,canonical,;echo webguard_cmd_test
+https://example.com/search?q=HtTp://169.254.169.254/lAtEsT/MeTa-dAtA/,1,SSRF,CWE-918,case_whitespace_mangled,http://169.254.169.254/latest/meta-data/
+https://news.io/contact?page=72&sort=popular,0,benign,-,canonical,
+https://example.com/search?q=1 AND SLEEP(1),1,SQL Injection,CWE-89,canonical,1 AND SLEEP(1)
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data='  /**/ OR  /**/ '1'='1",1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1
+"GET /search?category=toys&page=14 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://portal.company.com/contact?page=86&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=1 WAITFOR DELAY '0:0:3'--,1,SQL Injection,CWE-89,canonical,1 WAITFOR DELAY '0:0:3'--
+https://shop.example.com/item?id=gopher%3A%2F%2Finternal%3A70%2F_x&ref=home,1,SSRF,CWE-918,percent_encoded,gopher://internal:70/_x
+"GET /profile?user=%27%20UNION%20SELECT%20NULL-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,' UNION SELECT NULL--
+"GET /search?category=food&page=19 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=%7Cecho%20webguard_cmd_test HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,percent_encoded,|echo webguard_cmd_test
+https://api.example.com/help?page=63&sort=name_asc,0,benign,-,canonical,
+https://example.com/search?q=%2E%2e%2F%2e%2E%2fEtC%2fPaSsWd,1,Path Traversal,CWE-22,case_whitespace_mangled,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+https://shop.example.com/item?id=JaVaScRiPt:wEbGuArD_XsS_TeSt&ref=home,1,XSS,CWE-79,case_whitespace_mangled,javascript:webguard_xss_test
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=JaVaScRiPt:wEbGuArD_XsS_TeSt",1,XSS,CWE-79,case_whitespace_mangled,javascript:webguard_xss_test
+https://shop.example.com/item?id=%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fpasswd%22%3E%5D%3E&ref=home,1,XXE,CWE-611,percent_encoded,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://shop.example.com/item?id=%3Becho%20webguard_cmd_test&ref=home,1,Command Injection,CWE-78,percent_encoded,;echo webguard_cmd_test
+https://blog.com/api/data?page=56&sort=price_desc,0,benign,-,canonical,
+https://app.service.com/dashboard?page=52&sort=newest,0,benign,-,canonical,
+"GET /settings?category=sports&page=20 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,percent_encoded,http://169.254.169.254/latest/meta-data/
+"GET /profile?user=../../../../EtC/PaSsWd HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,case_whitespace_mangled,../../../../etc/passwd
+"POST /api/data?category=books&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=1  /**/ WAITFOR  /**/ DELAY  /**/ '0:0:3'--&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,1 WAITFOR DELAY '0:0:3'--
+https://news.io/settings?page=53&sort=price_desc,0,benign,-,canonical,
+"GET /home?category=electronics&page=3 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"POST /dashboard?category=clothing&page=12 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/help?page=37&sort=price_desc,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=<!DOCTYPE  /**/ FoO  /**/ [<!ENTITY  /**/ XxE  /**/ SYSTEM  /**/ ""FiLe:///EtC/PaSsWd"">]>",1,XXE,CWE-611,case_whitespace_mangled,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://news.io/home?page=48&sort=popular,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fpasswd%22%3E%5D%3E",1,XXE,CWE-611,percent_encoded,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+"POST /dashboard?category=electronics&page=3 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/products?page=26&sort=popular,0,benign,-,canonical,
+https://shop.example.com/item?id=file%3A%2F%2F%2Fetc%2Fpasswd&ref=home,1,SSRF,CWE-918,percent_encoded,file:///etc/passwd
+"GET /profile?user={{7*7}} HTTP/1.1
+Host: app.example.com
+",1,SSTI,CWE-94,canonical,{{7*7}}
+https://api.example.com/api/data?page=21&sort=popular,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=webguard_xss_test<b>",1,XSS,CWE-79,canonical,webguard_xss_test<b>
+https://app.service.com/settings?page=50&sort=newest,0,benign,-,canonical,
+"POST /api/data?category=toys&page=4 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%7Cecho%20webguard_cmd_test",1,Command Injection,CWE-78,percent_encoded,|echo webguard_cmd_test
+"POST /settings?category=books&page=19 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"POST /settings?category=clothing&page=3 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"POST /about?category=sports&page=20 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=HtTpS://WeBgUaRd-eViL.ExAmPlE/ HTTP/1.1
+Host: app.example.com
+",1,Open Redirect,CWE-601,case_whitespace_mangled,https://webguard-evil.example/
+https://example.com/search?q=JaVaScRiPt:wEbGuArD_XsS_TeSt,1,XSS,CWE-79,case_whitespace_mangled,javascript:webguard_xss_test
+"POST /api/data?category=sports&page=16 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"GET /products?category=toys&page=10 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=http://127.0.0.1:6379/&ref=home,1,SSRF,CWE-918,canonical,http://127.0.0.1:6379/
+https://shop.com/api/data?page=49&sort=popular,0,benign,-,canonical,
+"POST /api/data?category=food&page=5 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.com/help?page=42&sort=newest,0,benign,-,canonical,
+"GET /api/data?category=books&page=13 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=GoPhEr://iNtErNaL:70/_X HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,case_whitespace_mangled,gopher://internal:70/_x
+"POST /products?category=food&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/dashboard?page=3&sort=newest,0,benign,-,canonical,
+"POST /about?category=clothing&page=20 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=..\..\..\windows\system32\drivers\etc\hosts&ref=home,1,Path Traversal,CWE-22,canonical,..\..\..\windows\system32\drivers\etc\hosts
+https://shop.com/settings?page=48&sort=price_asc,0,benign,-,canonical,
+https://app.service.com/search?page=22&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=http://127.0.0.1:6379/,1,SSRF,CWE-918,canonical,http://127.0.0.1:6379/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=..\..\..\wInDoWs\sYsTeM32\DrIvErS\EtC\HoStS",1,Path Traversal,CWE-22,case_whitespace_mangled,..\..\..\windows\system32\drivers\etc\hosts
+https://example.com/search?q=%26%26echo%20webguard_cmd_test,1,Command Injection,CWE-78,percent_encoded,&&echo webguard_cmd_test
+https://example.com/search?q=password%3D%22Sup3rSecretPassw0rd%21%22,1,Hardcoded Credentials,CWE-798,percent_encoded,"password=""Sup3rSecretPassw0rd!"""
+https://example.com/search?q=GoPhEr://iNtErNaL:70/_X,1,SSRF,CWE-918,case_whitespace_mangled,gopher://internal:70/_x
+https://shop.example.com/item?id=%3Cscript%3Ewebguard_xss_test%3C%2Fscript%3E&ref=home,1,XSS,CWE-79,percent_encoded,<script>webguard_xss_test</script>
+https://portal.company.com/dashboard?page=6&sort=name_asc,0,benign,-,canonical,
+"GET /profile?user=..\..\..\wInDoWs\sYsTeM32\DrIvErS\EtC\HoStS HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,case_whitespace_mangled,..\..\..\windows\system32\drivers\etc\hosts
+https://shop.example.com/item?id=api_key%3D%22AKIA1234567890ABCDEF%22&ref=home,1,Hardcoded Credentials,CWE-798,percent_encoded,"api_key=""AKIA1234567890ABCDEF"""
+https://blog.com/about?page=69&sort=price_desc,0,benign,-,canonical,
+"GET /profile?user=password%3D%22Sup3rSecretPassw0rd%21%22 HTTP/1.1
+Host: app.example.com
+",1,Hardcoded Credentials,CWE-798,percent_encoded,"password=""Sup3rSecretPassw0rd!"""
+https://shop.example.com/item?id=..%5C..%5C..%5Cwindows%5Csystem32%5Cdrivers%5Cetc%5Chosts&ref=home,1,Path Traversal,CWE-22,percent_encoded,..\..\..\windows\system32\drivers\etc\hosts
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=HtTp://127.0.0.1:6379/",1,SSRF,CWE-918,case_whitespace_mangled,http://127.0.0.1:6379/
+"GET /profile?user=<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]> HTTP/1.1
+Host: app.example.com
+",1,XXE,CWE-611,canonical,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+SELECT DISTINCT category FROM products WHERE active = 1,0,benign,-,canonical,
+https://app.service.com/contact?page=2&sort=name_asc,0,benign,-,canonical,
+https://shop.com/contact?page=85&sort=price_desc,0,benign,-,canonical,
+https://shop.example.com/item?id=../../../../EtC/PaSsWd&ref=home,1,Path Traversal,CWE-22,case_whitespace_mangled,../../../../etc/passwd
+"POST /api/data?category=sports&page=1 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=HtTpS://WeBgUaRd-eViL.ExAmPlE/",1,Open Redirect,CWE-601,case_whitespace_mangled,https://webguard-evil.example/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=webguard_xss_test%3Cb%3E",1,XSS,CWE-79,percent_encoded,webguard_xss_test<b>
+"GET /profile?user=%2E%2e%2F%2e%2E%2fEtC%2fPaSsWd HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,case_whitespace_mangled,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+"https://example.com/search?q=password=""Sup3rSecretPassw0rd!""",1,Hardcoded Credentials,CWE-798,canonical,"password=""Sup3rSecretPassw0rd!"""
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=https://webguard-evil.example/",1,Open Redirect,CWE-601,canonical,https://webguard-evil.example/
+https://shop.example.com/item?id=&&EcHo  /**/ wEbGuArD_CmD_TeSt&ref=home,1,Command Injection,CWE-78,case_whitespace_mangled,&&echo webguard_cmd_test
+https://shop.example.com/item?id='  /**/ OR  /**/ '1'='1&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1
+"GET /settings?category=toys&page=3 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://portal.company.com/api/data?page=86&sort=price_asc,0,benign,-,canonical,
+"GET /products?category=books&page=9 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/user/profile?page=87&sort=name_asc,0,benign,-,canonical,
+https://example.com/search?q=;echo webguard_cmd_test,1,Command Injection,CWE-78,canonical,;echo webguard_cmd_test
+"POST /user/profile?category=sports&page=3 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"GET /dashboard?category=electronics&page=2 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1%27",1,SQL Injection,CWE-89,percent_encoded,1'
+"GET /user/profile?category=sports&page=1 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /contact?category=food&page=18 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=1 WAITFOR DELAY '0:0:3'-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,1 WAITFOR DELAY '0:0:3'--
+"GET /search?category=health&page=2 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://api.example.com/api/data?page=9&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=HtTpS://WeBgUaRd-eViL.ExAmPlE/&ref=home,1,Open Redirect,CWE-601,case_whitespace_mangled,https://webguard-evil.example/
+https://example.com/search?q=api_key%3D%22AKIA1234567890ABCDEF%22,1,Hardcoded Credentials,CWE-798,percent_encoded,"api_key=""AKIA1234567890ABCDEF"""
+"GET /profile?user=1' HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,1'
+"GET /search?category=health&page=13 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=//webguard-evil.example/&ref=home,1,Open Redirect,CWE-601,canonical,//webguard-evil.example/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data='",1,SQL Injection,CWE-89,canonical,'
+https://app.service.com/api/data?page=21&sort=name_asc,0,benign,-,canonical,
+"GET /search?q=laptop+bag&page=2 HTTP/1.1
+Host: store.com",0,benign,-,canonical,
+"GET /search?category=sports&page=10 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=;eChO  /**/ WeBgUaRd_cMd_tEsT",1,Command Injection,CWE-78,case_whitespace_mangled,;echo webguard_cmd_test
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=&&echo webguard_cmd_test",1,Command Injection,CWE-78,canonical,&&echo webguard_cmd_test
+https://shop.example.com/item?id=%27%20UNION%20SELECT%20NULL--&ref=home,1,SQL Injection,CWE-89,percent_encoded,' UNION SELECT NULL--
+"GET /help?category=health&page=12 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=1 AND SLEEP(1)&ref=home,1,SQL Injection,CWE-89,canonical,1 AND SLEEP(1)
+https://shop.example.com/item?id=https://webguard-evil.example/&ref=home,1,Open Redirect,CWE-601,canonical,https://webguard-evil.example/
+https://portal.company.com/contact?page=66&sort=price_desc,0,benign,-,canonical,
+https://shop.example.com/item?id=//WeBgUaRd-eViL.ExAmPlE/&ref=home,1,Open Redirect,CWE-601,case_whitespace_mangled,//webguard-evil.example/
+https://shop.example.com/item?id=;echo webguard_cmd_test&ref=home,1,Command Injection,CWE-78,canonical,;echo webguard_cmd_test
+https://cdn.site.org/api/data?page=27&sort=price_asc,0,benign,-,canonical,
+https://example.com/search?q=file%3A%2F%2F%2Fetc%2Fpasswd,1,SSRF,CWE-918,percent_encoded,file:///etc/passwd
+https://blog.com/settings?page=55&sort=newest,0,benign,-,canonical,
+"GET /profile?user=&&EcHo  /**/ wEbGuArD_CmD_TeSt HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,case_whitespace_mangled,&&echo webguard_cmd_test
+https://store.io/search?q=shoes&size=10,0,benign,-,canonical,
+"GET /dashboard?category=sports&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=|eChO  /**/ WeBgUaRd_cMd_tEsT HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,case_whitespace_mangled,|echo webguard_cmd_test
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=' UNION SELECT NULL--",1,SQL Injection,CWE-89,canonical,' UNION SELECT NULL--
+https://portal.company.com/help?page=21&sort=price_asc,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=<img src=x onerror=webguard_xss_test>",1,XSS,CWE-79,canonical,<img src=x onerror=webguard_xss_test>
+"GET /products?category=books&page=12 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=<script>webguard_xss_test</script> HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,canonical,<script>webguard_xss_test</script>
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1  /**/ WAITFOR  /**/ DELAY  /**/ '0:0:3'--",1,SQL Injection,CWE-89,case_whitespace_mangled,1 WAITFOR DELAY '0:0:3'--
+"POST /dashboard?category=food&page=12 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /contact?category=food&page=4 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"POST /home?category=toys&page=16 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.com/help?page=49&sort=newest,0,benign,-,canonical,
+https://shop.example.com/item?id=1%27&ref=home,1,SQL Injection,CWE-89,percent_encoded,1'
+https://cdn.site.org/user/profile?page=97&sort=price_asc,0,benign,-,canonical,
+"GET /products?category=sports&page=8 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=|echo webguard_cmd_test&ref=home,1,Command Injection,CWE-78,canonical,|echo webguard_cmd_test
+https://blog.com/search?page=70&sort=name_asc,0,benign,-,canonical,
+"GET /profile?user=|echo webguard_cmd_test HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,canonical,|echo webguard_cmd_test
+https://example.com/search?q=%252e%252e%252f%252e%252e%252fetc%252fpasswd,1,Path Traversal,CWE-22,percent_encoded,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=' OR '1'='1",1,SQL Injection,CWE-89,canonical,' OR '1'='1
+"GET /settings?category=toys&page=16 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"GET /products?category=health&page=13 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=1 WAITFOR DELAY '0:0:3'--&ref=home,1,SQL Injection,CWE-89,canonical,1 WAITFOR DELAY '0:0:3'--
+"https://shop.example.com/item?id=password=""Sup3rSecretPassw0rd!""&ref=home",1,Hardcoded Credentials,CWE-798,canonical,"password=""Sup3rSecretPassw0rd!"""
+"GET /profile?user=' OR '1'='1 HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,' OR '1'='1
+https://shop.example.com/item?id=1%20WAITFOR%20DELAY%20%270%3A0%3A3%27--&ref=home,1,SQL Injection,CWE-89,percent_encoded,1 WAITFOR DELAY '0:0:3'--
+"GET /contact?category=sports&page=11 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /dashboard?category=books&page=2 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user={%  /**/ pRiNt(7*7)  /**/ %} HTTP/1.1
+Host: app.example.com
+",1,SSTI,CWE-94,case_whitespace_mangled,{% print(7*7) %}
+https://example.com/search?q=//WeBgUaRd-eViL.ExAmPlE/,1,Open Redirect,CWE-601,case_whitespace_mangled,//webguard-evil.example/
+"GET /about?category=books&page=15 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1%20WAITFOR%20DELAY%20%270%3A0%3A3%27--",1,SQL Injection,CWE-89,percent_encoded,1 WAITFOR DELAY '0:0:3'--
+https://example.com/search?q=../../../../EtC/PaSsWd,1,Path Traversal,CWE-22,case_whitespace_mangled,../../../../etc/passwd
+"GET /profile?user=1 AND SLEEP(1) HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,1 AND SLEEP(1)
+https://example.com/search?q=;eChO  /**/ WeBgUaRd_cMd_tEsT,1,Command Injection,CWE-78,case_whitespace_mangled,;echo webguard_cmd_test
+https://app.service.com/dashboard?page=94&sort=price_desc,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%27%20OR%20%271%27%3D%271",1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1
+https://cdn.site.org/products?page=89&sort=newest,0,benign,-,canonical,
+"GET /contact?category=books&page=15 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.com/contact?page=74&sort=name_asc,0,benign,-,canonical,
+https://example.com/search?q='  /**/ OR  /**/ '1'='1'--,1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1'--
+"POST /products?category=books&page=2 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/settings?page=86&sort=popular,0,benign,-,canonical,
+"GET /profile?user=file:///etc/passwd HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,canonical,file:///etc/passwd
+https://shop.example.com/item?id={% print(7*7) %}&ref=home,1,SSTI,CWE-94,canonical,{% print(7*7) %}
+"POST /user/profile?category=toys&page=12 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/about?page=52&sort=name_asc,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=<iMg  /**/ sRc=x  /**/ oNeRrOr=wEbGuArD_XsS_TeSt>",1,XSS,CWE-79,case_whitespace_mangled,<img src=x onerror=webguard_xss_test>
+https://example.com/search?q=..\..\..\windows\system32\drivers\etc\hosts,1,Path Traversal,CWE-22,canonical,..\..\..\windows\system32\drivers\etc\hosts
+"GET /profile?user=..%2F..%2F..%2F..%2Fetc%2Fpasswd HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,percent_encoded,../../../../etc/passwd
+"SELECT p.name, p.price FROM products p JOIN categories c ON p.cat_id = c.id",0,benign,-,canonical,
+"GET /profile?user=%7B%25%20print%287%2A7%29%20%25%7D HTTP/1.1
+Host: app.example.com
+",1,SSTI,CWE-94,percent_encoded,{% print(7*7) %}
+"GET /profile?user=1' HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,1'
+"POST /contact?category=sports&page=6 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=PaSsWoRd=""SuP3RSEcReTPAsSw0rD!"" HTTP/1.1
+Host: app.example.com
+",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"password=""Sup3rSecretPassw0rd!"""
+"GET /profile?user=1  /**/ AND  /**/ SLEEP(1) HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,1 AND SLEEP(1)
+https://shop.example.com/item?id=1'&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,1'
+https://api.example.com/home?page=13&sort=price_desc,0,benign,-,canonical,
+https://cdn.site.org/user/profile?page=88&sort=popular,0,benign,-,canonical,
+"https://shop.example.com/item?id=ApI_KeY=""AKIA1234567890ABCDEF""&ref=home",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"api_key=""AKIA1234567890ABCDEF"""
+https://portal.company.com/help?page=19&sort=newest,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=..%5C..%5C..%5Cwindows%5Csystem32%5Cdrivers%5Cetc%5Chosts",1,Path Traversal,CWE-22,percent_encoded,..\..\..\windows\system32\drivers\etc\hosts
+"https://example.com/search?q=<!DOCTYPE  /**/ FoO  /**/ [<!ENTITY  /**/ XxE  /**/ SYSTEM  /**/ ""FiLe:///EtC/PaSsWd"">]>",1,XXE,CWE-611,case_whitespace_mangled,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://cdn.site.org/user/profile?page=3&sort=newest,0,benign,-,canonical,
+https://news.io/help?page=22&sort=price_asc,0,benign,-,canonical,
+https://example.com/search?q=..%5C..%5C..%5Cwindows%5Csystem32%5Cdrivers%5Cetc%5Chosts,1,Path Traversal,CWE-22,percent_encoded,..\..\..\windows\system32\drivers\etc\hosts
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=|echo webguard_cmd_test",1,Command Injection,CWE-78,canonical,|echo webguard_cmd_test
+https://shop.example.com/item?id=WeBgUaRd_xSs_tEsT<B>&ref=home,1,XSS,CWE-79,case_whitespace_mangled,webguard_xss_test<b>
+"GET /index.html HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%3Becho%20webguard_cmd_test",1,Command Injection,CWE-78,percent_encoded,;echo webguard_cmd_test
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=ApI_KeY=""AKIA1234567890ABCDEF""",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"api_key=""AKIA1234567890ABCDEF"""
+https://blog.com/about?page=15&sort=newest,0,benign,-,canonical,
+"GET /profile?user=file%3A%2F%2F%2Fetc%2Fpasswd HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,percent_encoded,file:///etc/passwd
+"POST /help?category=toys&page=13 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=GoPhEr://iNtErNaL:70/_X",1,SSRF,CWE-918,case_whitespace_mangled,gopher://internal:70/_x
+https://docs.site.com/api/getting-started,0,benign,-,canonical,
+https://shop.example.com/item?id=1'&ref=home,1,SQL Injection,CWE-89,canonical,1'
+https://example.com/search?q={{7*7}},1,SSTI,CWE-94,canonical,{{7*7}}
+"GET /profile?user=password=""Sup3rSecretPassw0rd!"" HTTP/1.1
+Host: app.example.com
+",1,Hardcoded Credentials,CWE-798,canonical,"password=""Sup3rSecretPassw0rd!"""
+https://shop.com/products?page=77&sort=name_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=%27&ref=home,1,SQL Injection,CWE-89,percent_encoded,'
+https://example.com/search?q=%27%20UNION%20SELECT%20NULL--,1,SQL Injection,CWE-89,percent_encoded,' UNION SELECT NULL--
+https://news.io/settings?page=92&sort=newest,0,benign,-,canonical,
+"POST /api/orders HTTP/1.1
+Host: shop.com
+product_id=42&qty=2&user_id=7",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=..\..\..\windows\system32\drivers\etc\hosts",1,Path Traversal,CWE-22,canonical,..\..\..\windows\system32\drivers\etc\hosts
+https://cdn.site.org/user/profile?page=20&sort=price_desc,0,benign,-,canonical,
+"POST /home?category=electronics&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%26%26echo%20webguard_cmd_test",1,Command Injection,CWE-78,percent_encoded,&&echo webguard_cmd_test
+https://blog.com/api/data?page=49&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=WeBgUaRd_xSs_tEsT<B>,1,XSS,CWE-79,case_whitespace_mangled,webguard_xss_test<b>
+"GET /dashboard?category=clothing&page=19 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /products?category=toys&page=1 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=..%2F..%2F..%2F..%2Fetc%2Fpasswd,1,Path Traversal,CWE-22,percent_encoded,../../../../etc/passwd
+"GET /search?category=food&page=2 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=gopher://internal:70/_x&ref=home,1,SSRF,CWE-918,canonical,gopher://internal:70/_x
+https://example.com/search?q=%7B%7B7%2A7%7D%7D,1,SSTI,CWE-94,percent_encoded,{{7*7}}
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%7B%7B7%2A7%7D%7D",1,SSTI,CWE-94,percent_encoded,{{7*7}}
+"GET /contact?category=food&page=1 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /search?category=food&page=6 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/data?category=food&page=6 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"https://shop.example.com/item?id=PaSsWoRd=""SuP3RSEcReTPAsSw0rD!""&ref=home",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"password=""Sup3rSecretPassw0rd!"""
+"GET /profile?user='  /**/ OR  /**/ '1'='1 HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1
+"GET /search?category=clothing&page=14 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /home?category=electronics&page=5 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://portal.company.com/about?page=2&sort=price_desc,0,benign,-,canonical,
+https://shop.example.com/item?id={{7*7}}&ref=home,1,SSTI,CWE-94,canonical,{{7*7}}
+https://blog.com/about?page=94&sort=newest,0,benign,-,canonical,
+"POST /settings?category=clothing&page=6 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=webguard_xss_test<b>,1,XSS,CWE-79,canonical,webguard_xss_test<b>
+"GET /api/data?category=food&page=16 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /products?category=electronics&page=4 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=%7B%25%20print%287%2A7%29%20%25%7D&ref=home,1,SSTI,CWE-94,percent_encoded,{% print(7*7) %}
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data='  /**/ OR  /**/ '1'='1'--",1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1'--
+"POST /dashboard?category=health&page=14 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id='  /**/ UNION  /**/ SELECT  /**/ NULL--&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,' UNION SELECT NULL--
+"GET /profile?user=FiLe:///EtC/PaSsWd HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,case_whitespace_mangled,file:///etc/passwd
+"POST /search?category=health&page=1 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"POST /about?category=clothing&page=14 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/api/data?page=82&sort=name_asc,0,benign,-,canonical,
+https://api.example.com/about?page=40&sort=popular,0,benign,-,canonical,
+https://shop.example.com/item?id=http%3A%2F%2F127.0.0.1%3A6379%2F&ref=home,1,SSRF,CWE-918,percent_encoded,http://127.0.0.1:6379/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data={{7*7}}",1,SSTI,CWE-94,case_whitespace_mangled,{{7*7}}
+"GET /images/logo.png HTTP/1.1
+Host: cdn.example.com",0,benign,-,canonical,
+"POST /dashboard?category=sports&page=8 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=%252e%252e%252f%252e%252e%252fetc%252fpasswd&ref=home,1,Path Traversal,CWE-22,percent_encoded,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+https://blog.com/api/data?page=84&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fpasswd%22%3E%5D%3E,1,XXE,CWE-611,percent_encoded,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+"POST /search?category=clothing&page=7 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /contact?category=books&page=5 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id='  /**/ OR  /**/ '1'='1'--&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1'--
+https://shop.example.com/item?id=javascript:webguard_xss_test&ref=home,1,XSS,CWE-79,canonical,javascript:webguard_xss_test
+"GET /profile?user=..%5C..%5C..%5Cwindows%5Csystem32%5Cdrivers%5Cetc%5Chosts HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,percent_encoded,..\..\..\windows\system32\drivers\etc\hosts
+https://blog.com/contact?page=55&sort=name_asc,0,benign,-,canonical,
+"GET /profile?user=1%20WAITFOR%20DELAY%20%270%3A0%3A3%27-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,1 WAITFOR DELAY '0:0:3'--
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=http://127.0.0.1:6379/",1,SSRF,CWE-918,canonical,http://127.0.0.1:6379/
+https://news.io/about?page=76&sort=price_desc,0,benign,-,canonical,
+https://blog.com/about?page=21&sort=price_desc,0,benign,-,canonical,
+https://app.service.com/user/profile?page=98&sort=newest,0,benign,-,canonical,
+"POST /contact?category=health&page=14 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /user/profile?category=books&page=19 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/contact?page=27&sort=newest,0,benign,-,canonical,
+"GET /search?category=clothing&page=2 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F&ref=home,1,SSRF,CWE-918,percent_encoded,http://169.254.169.254/latest/meta-data/
+https://shop.example.com/item?id=../../../../etc/passwd&ref=home,1,Path Traversal,CWE-22,canonical,../../../../etc/passwd
+"GET /profile?user=%26%26echo%20webguard_cmd_test HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,percent_encoded,&&echo webguard_cmd_test
+https://example.com/search?q=%27,1,SQL Injection,CWE-89,percent_encoded,'
+https://example.com/search?q=&&EcHo  /**/ wEbGuArD_CmD_TeSt,1,Command Injection,CWE-78,case_whitespace_mangled,&&echo webguard_cmd_test
+https://example.com/search?q=<script>webguard_xss_test</script>,1,XSS,CWE-79,canonical,<script>webguard_xss_test</script>
+https://portal.company.com/search?page=90&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=https%3A%2F%2Fwebguard-evil.example%2F,1,Open Redirect,CWE-601,percent_encoded,https://webguard-evil.example/
+https://shop.com/dashboard?page=97&sort=newest,0,benign,-,canonical,
+"POST /home?category=health&page=5 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/about?page=59&sort=popular,0,benign,-,canonical,
+"POST /api/data?category=books&page=9 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=%3Cscript%3Ewebguard_xss_test%3C%2Fscript%3E,1,XSS,CWE-79,percent_encoded,<script>webguard_xss_test</script>
+https://portal.company.com/dashboard?page=36&sort=price_asc,0,benign,-,canonical,
+https://app.service.com/contact?page=77&sort=popular,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data='  /**/ UNION  /**/ SELECT  /**/ NULL--",1,SQL Injection,CWE-89,case_whitespace_mangled,' UNION SELECT NULL--
+"GET /profile?user=%27 HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,'
+"POST /about?category=health&page=16 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=api_key=""AKIA1234567890ABCDEF""",1,Hardcoded Credentials,CWE-798,canonical,"api_key=""AKIA1234567890ABCDEF"""
+"POST /settings?category=books&page=4 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"GET /user/profile?category=electronics&page=20 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+https://news.io/search?page=7&sort=price_asc,0,benign,-,canonical,
+"POST /help?category=electronics&page=17 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%2F%2Fwebguard-evil.example%2F",1,Open Redirect,CWE-601,percent_encoded,//webguard-evil.example/
+https://example.com/search?q='  /**/ UNION  /**/ SELECT  /**/ NULL--,1,SQL Injection,CWE-89,case_whitespace_mangled,' UNION SELECT NULL--
+"POST /api/data?category=toys&page=12 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=HtTp://169.254.169.254/lAtEsT/MeTa-dAtA/ HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,case_whitespace_mangled,http://169.254.169.254/latest/meta-data/
+https://api.example.com/products?page=22&sort=newest,0,benign,-,canonical,
+"POST /home?category=clothing&page=15 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/contact?page=97&sort=price_desc,0,benign,-,canonical,
+https://cdn.site.org/settings?page=37&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F,1,SSRF,CWE-918,percent_encoded,http://169.254.169.254/latest/meta-data/
+"GET /settings?category=food&page=1 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/contact?page=18&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=<iMg  /**/ sRc=x  /**/ oNeRrOr=wEbGuArD_XsS_TeSt>,1,XSS,CWE-79,case_whitespace_mangled,<img src=x onerror=webguard_xss_test>
+https://api.example.com/home?page=68&sort=newest,0,benign,-,canonical,
+"GET /profile?user=1%27 HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,1'
+"POST /user/profile?category=books&page=4 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://api.example.com/search?page=98&sort=newest,0,benign,-,canonical,
+"GET /search?category=clothing&page=16 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=HtTpS://WeBgUaRd-eViL.ExAmPlE/,1,Open Redirect,CWE-601,case_whitespace_mangled,https://webguard-evil.example/
+"GET /profile?user=%27%20OR%20%271%27%3D%271%27-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1'--
+https://example.com/search?q=1',1,SQL Injection,CWE-89,case_whitespace_mangled,1'
+"GET /profile?user=api_key=""AKIA1234567890ABCDEF"" HTTP/1.1
+Host: app.example.com
+",1,Hardcoded Credentials,CWE-798,canonical,"api_key=""AKIA1234567890ABCDEF"""
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=api_key%3D%22AKIA1234567890ABCDEF%22",1,Hardcoded Credentials,CWE-798,percent_encoded,"api_key=""AKIA1234567890ABCDEF"""
+"GET /settings?category=electronics&page=1 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /api/health HTTP/1.1
+Host: api.service.com",0,benign,-,canonical,
+https://store.example.com/help?page=88&sort=newest,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=HtTp://169.254.169.254/lAtEsT/MeTa-dAtA/",1,SSRF,CWE-918,case_whitespace_mangled,http://169.254.169.254/latest/meta-data/
+"GET /profile?user=https://webguard-evil.example/ HTTP/1.1
+Host: app.example.com
+",1,Open Redirect,CWE-601,canonical,https://webguard-evil.example/
+"POST /contact?category=electronics&page=19 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=%7Cecho%20webguard_cmd_test,1,Command Injection,CWE-78,percent_encoded,|echo webguard_cmd_test
+https://news.io/dashboard?page=34&sort=name_asc,0,benign,-,canonical,
+https://api.example.com/home?page=5&sort=name_asc,0,benign,-,canonical,
+https://example.com/search?q=1%27,1,SQL Injection,CWE-89,percent_encoded,1'
+"GET /api/data?category=electronics&page=20 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=%3Cimg%20src%3Dx%20onerror%3Dwebguard_xss_test%3E,1,XSS,CWE-79,percent_encoded,<img src=x onerror=webguard_xss_test>
+https://shop.example.com/item?id=https%3A%2F%2Fwebguard-evil.example%2F&ref=home,1,Open Redirect,CWE-601,percent_encoded,https://webguard-evil.example/
+"POST /home?category=clothing&page=19 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/settings?page=90&sort=newest,0,benign,-,canonical,
+"POST /settings?category=food&page=9 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=webguard_xss_test%3Cb%3E&ref=home,1,XSS,CWE-79,percent_encoded,webguard_xss_test<b>
+https://example.com/search?q=HtTp://127.0.0.1:6379/,1,SSRF,CWE-918,case_whitespace_mangled,http://127.0.0.1:6379/
+"GET /profile?user=%7B%7B7%2A7%7D%7D HTTP/1.1
+Host: app.example.com
+",1,SSTI,CWE-94,percent_encoded,{{7*7}}
+https://shop.example.com/item?id=%7B%7B7%2A7%7D%7D&ref=home,1,SSTI,CWE-94,percent_encoded,{{7*7}}
+"POST /about?category=health&page=13 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/api/data?page=55&sort=popular,0,benign,-,canonical,
+https://api.example.com/settings?page=47&sort=newest,0,benign,-,canonical,
+"GET /search?category=sports&page=5 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=javascript%3Awebguard_xss_test,1,XSS,CWE-79,percent_encoded,javascript:webguard_xss_test
+"GET /profile?user=HtTp://127.0.0.1:6379/ HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,case_whitespace_mangled,http://127.0.0.1:6379/
+"POST /about?category=electronics&page=16 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /help?category=electronics&page=5 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=webguard_xss_test%3Cb%3E,1,XSS,CWE-79,percent_encoded,webguard_xss_test<b>
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=FiLe:///EtC/PaSsWd",1,SSRF,CWE-918,case_whitespace_mangled,file:///etc/passwd
+https://cdn.site.org/contact?page=26&sort=price_desc,0,benign,-,canonical,
+"POST /settings?category=toys&page=4 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+"GET /user/profile?category=toys&page=13 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=%27%20OR%20%271%27%3D%271&ref=home,1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1
+"GET /api/data?category=electronics&page=10 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%27%20OR%20%271%27%3D%271%27--",1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1'--
+"GET /search?category=toys&page=16 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"GET /products?category=toys&page=1 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/user/profile?page=61&sort=popular,0,benign,-,canonical,
+"GET /help?category=health&page=17 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=' UNION SELECT NULL--,1,SQL Injection,CWE-89,canonical,' UNION SELECT NULL--
+"GET /api/data?category=electronics&page=18 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://app.service.com/api/data?page=68&sort=price_desc,0,benign,-,canonical,
+"POST /help?category=food&page=12 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /search?category=electronics&page=6 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fpasswd%22%3E%5D%3E HTTP/1.1
+Host: app.example.com
+",1,XXE,CWE-611,percent_encoded,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://example.com/search?q=%7B%25%20print%287%2A7%29%20%25%7D,1,SSTI,CWE-94,percent_encoded,{% print(7*7) %}
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%27",1,SQL Injection,CWE-89,percent_encoded,'
+https://shop.example.com/item?id=;eChO  /**/ WeBgUaRd_cMd_tEsT&ref=home,1,Command Injection,CWE-78,case_whitespace_mangled,;echo webguard_cmd_test
+https://app.service.com/home?page=71&sort=price_desc,0,benign,-,canonical,
+"GET /profile?user=javascript%3Awebguard_xss_test HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,percent_encoded,javascript:webguard_xss_test
+"GET /profile?user=webguard_xss_test<b> HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,canonical,webguard_xss_test<b>
+https://example.com/search?q=1%20AND%20SLEEP%281%29,1,SQL Injection,CWE-89,percent_encoded,1 AND SLEEP(1)
+https://shop.example.com/item?id=http://169.254.169.254/latest/meta-data/&ref=home,1,SSRF,CWE-918,canonical,http://169.254.169.254/latest/meta-data/
+https://example.com/search?q=gopher://internal:70/_x,1,SSRF,CWE-918,canonical,gopher://internal:70/_x
+"GET /api/data?category=food&page=12 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /about?category=books&page=2 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=|eChO  /**/ WeBgUaRd_cMd_tEsT",1,Command Injection,CWE-78,case_whitespace_mangled,|echo webguard_cmd_test
+"POST /about?category=electronics&page=4 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/products?page=100&sort=popular,0,benign,-,canonical,
+https://example.com/search?q=https://webguard-evil.example/,1,Open Redirect,CWE-601,canonical,https://webguard-evil.example/
+"POST /dashboard?category=toys&page=5 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/dashboard?page=48&sort=name_asc,0,benign,-,canonical,
+"GET /profile?user=<img src=x onerror=webguard_xss_test> HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,canonical,<img src=x onerror=webguard_xss_test>
+https://news.io/settings?page=50&sort=price_desc,0,benign,-,canonical,
+https://shop.com/about?page=96&sort=name_asc,0,benign,-,canonical,
+https://store.example.com/settings?page=44&sort=price_desc,0,benign,-,canonical,
+https://cdn.site.org/products?page=78&sort=price_asc,0,benign,-,canonical,
+"POST /api/data?category=electronics&page=9 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://portal.company.com/about?page=66&sort=price_asc,0,benign,-,canonical,
+"GET /settings?category=health&page=8 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.com/contact?page=6&sort=newest,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%7B%25%20print%287%2A7%29%20%25%7D",1,SSTI,CWE-94,percent_encoded,{% print(7*7) %}
+https://blog.com/settings?page=13&sort=price_desc,0,benign,-,canonical,
+"GET /user/profile?category=sports&page=12 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/products?page=66&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=%3Becho%20webguard_cmd_test,1,Command Injection,CWE-78,percent_encoded,;echo webguard_cmd_test
+"GET /settings?category=clothing&page=19 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=WeBgUaRd_xSs_tEsT<B>",1,XSS,CWE-79,case_whitespace_mangled,webguard_xss_test<b>
+"GET /profile?user=WeBgUaRd_xSs_tEsT<B> HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,case_whitespace_mangled,webguard_xss_test<b>
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1%20AND%20SLEEP%281%29",1,SQL Injection,CWE-89,percent_encoded,1 AND SLEEP(1)
+"POST /dashboard?category=health&page=4 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=<script>webguard_xss_test</script>&ref=home,1,XSS,CWE-79,canonical,<script>webguard_xss_test</script>
+"GET /settings?category=sports&page=9 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=http://127.0.0.1:6379/ HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,canonical,http://127.0.0.1:6379/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1'",1,SQL Injection,CWE-89,case_whitespace_mangled,1'
+https://shop.example.com/item?id=HtTp://127.0.0.1:6379/&ref=home,1,SSRF,CWE-918,case_whitespace_mangled,http://127.0.0.1:6379/
+"https://example.com/search?q=PaSsWoRd=""SuP3RSEcReTPAsSw0rD!""",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"password=""Sup3rSecretPassw0rd!"""
+"POST /search?category=clothing&page=14 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://shop.com/settings?page=8&sort=price_desc,0,benign,-,canonical,
+"GET /profile?user=%27%20OR%20%271%27%3D%271 HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1
+"GET /products?category=clothing&page=16 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=api_key%3D%22AKIA1234567890ABCDEF%22 HTTP/1.1
+Host: app.example.com
+",1,Hardcoded Credentials,CWE-798,percent_encoded,"api_key=""AKIA1234567890ABCDEF"""
+https://example.com/search?q=',1,SQL Injection,CWE-89,canonical,'
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%2e%2e%2f%2e%2e%2fetc%2fpasswd",1,Path Traversal,CWE-22,canonical,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+"GET /about?category=books&page=15 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://api.example.com/products?page=81&sort=popular,0,benign,-,canonical,
+https://api.example.com/about?page=23&sort=newest,0,benign,-,canonical,
+https://portal.company.com/home?page=43&sort=popular,0,benign,-,canonical,
+https://shop.example.com/item?id={%  /**/ pRiNt(7*7)  /**/ %}&ref=home,1,SSTI,CWE-94,case_whitespace_mangled,{% print(7*7) %}
+https://example.com/search?q=javascript:webguard_xss_test,1,XSS,CWE-79,canonical,javascript:webguard_xss_test
+https://shop.com/dashboard?page=50&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=|eChO  /**/ WeBgUaRd_cMd_tEsT,1,Command Injection,CWE-78,case_whitespace_mangled,|echo webguard_cmd_test
+"GET /settings?category=health&page=11 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://news.io/search?page=62&sort=name_asc,0,benign,-,canonical,
+https://shop.example.com/item?id='&ref=home,1,SQL Injection,CWE-89,canonical,'
+https://news.io/about?page=90&sort=name_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=%2E%2e%2F%2e%2E%2fEtC%2fPaSsWd&ref=home,1,Path Traversal,CWE-22,case_whitespace_mangled,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+https://portal.company.com/contact?page=71&sort=popular,0,benign,-,canonical,
+https://api.example.com/dashboard?page=98&sort=name_asc,0,benign,-,canonical,
+https://cdn.site.org/settings?page=43&sort=price_asc,0,benign,-,canonical,
+https://app.service.com/user/profile?page=55&sort=name_asc,0,benign,-,canonical,
+"GET /user/profile?category=food&page=3 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=javascript:webguard_xss_test",1,XSS,CWE-79,canonical,javascript:webguard_xss_test
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data='",1,SQL Injection,CWE-89,case_whitespace_mangled,'
+https://shop.example.com/item?id=FiLe:///EtC/PaSsWd&ref=home,1,SSRF,CWE-918,case_whitespace_mangled,file:///etc/passwd
+https://api.example.com/products?page=85&sort=newest,0,benign,-,canonical,
+"GET /search?category=health&page=17 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /home?category=sports&page=2 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.com/contact?page=81&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=1  /**/ AND  /**/ SLEEP(1)&ref=home,1,SQL Injection,CWE-89,case_whitespace_mangled,1 AND SLEEP(1)
+"GET /user/profile?category=books&page=7 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/contact?page=61&sort=price_desc,0,benign,-,canonical,
+https://example.com/search?q=%2e%2e%2f%2e%2e%2fetc%2fpasswd,1,Path Traversal,CWE-22,canonical,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+https://shop.example.com/item?id=javascript%3Awebguard_xss_test&ref=home,1,XSS,CWE-79,percent_encoded,javascript:webguard_xss_test
+https://example.com/search?q=1',1,SQL Injection,CWE-89,canonical,1'
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=<script>webguard_xss_test</script>",1,XSS,CWE-79,canonical,<script>webguard_xss_test</script>
+"GET /products?category=food&page=18 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/about?page=53&sort=name_asc,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=../../../../etc/passwd",1,Path Traversal,CWE-22,canonical,../../../../etc/passwd
+"POST /about?category=toys&page=8 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /about?category=food&page=10 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /home?category=books&page=11 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"POST /search?category=clothing&page=5 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=GoPhEr://iNtErNaL:70/_X&ref=home,1,SSRF,CWE-918,case_whitespace_mangled,gopher://internal:70/_x
+https://blog.com/search?page=59&sort=newest,0,benign,-,canonical,
+https://example.com/search?q=file:///etc/passwd,1,SSRF,CWE-918,canonical,file:///etc/passwd
+"INSERT INTO orders (user_id, total) VALUES (5, 99.99)",0,benign,-,canonical,
+"GET /profile?user=gopher%3A%2F%2Finternal%3A70%2F_x HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,percent_encoded,gopher://internal:70/_x
+https://example.com/search?q=..\..\..\wInDoWs\sYsTeM32\DrIvErS\EtC\HoStS,1,Path Traversal,CWE-22,case_whitespace_mangled,..\..\..\windows\system32\drivers\etc\hosts
+"GET /dashboard?category=food&page=8 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/data?category=clothing&page=17 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"GET /dashboard?category=electronics&page=9 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=%2F%2Fwebguard-evil.example%2F,1,Open Redirect,CWE-601,percent_encoded,//webguard-evil.example/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=password%3D%22Sup3rSecretPassw0rd%21%22",1,Hardcoded Credentials,CWE-798,percent_encoded,"password=""Sup3rSecretPassw0rd!"""
+"POST /settings?category=toys&page=2 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://example.com/search?q=//webguard-evil.example/,1,Open Redirect,CWE-601,canonical,//webguard-evil.example/
+"GET /profile?user=1%20AND%20SLEEP%281%29 HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,percent_encoded,1 AND SLEEP(1)
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=gopher%3A%2F%2Finternal%3A70%2F_x",1,SSRF,CWE-918,percent_encoded,gopher://internal:70/_x
+"GET /help?category=toys&page=15 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=PaSsWoRd=""SuP3RSEcReTPAsSw0rD!""",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"password=""Sup3rSecretPassw0rd!"""
+https://cdn.site.org/products?page=72&sort=popular,0,benign,-,canonical,
+"GET /profile?user=http://169.254.169.254/latest/meta-data/ HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,canonical,http://169.254.169.254/latest/meta-data/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1'",1,SQL Injection,CWE-89,canonical,1'
+"GET /profile?user=ApI_KeY=""AKIA1234567890ABCDEF"" HTTP/1.1
+Host: app.example.com
+",1,Hardcoded Credentials,CWE-798,case_whitespace_mangled,"api_key=""AKIA1234567890ABCDEF"""
+"GET /profile?user=//WeBgUaRd-eViL.ExAmPlE/ HTTP/1.1
+Host: app.example.com
+",1,Open Redirect,CWE-601,case_whitespace_mangled,//webguard-evil.example/
+"GET /about?category=clothing&page=13 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"https://example.com/search?q=<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>",1,XXE,CWE-611,canonical,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+"POST /contact?category=health&page=19 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"POST /contact?category=electronics&page=6 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%2E%2e%2F%2e%2E%2fEtC%2fPaSsWd",1,Path Traversal,CWE-22,case_whitespace_mangled,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+https://cdn.site.org/about?page=30&sort=newest,0,benign,-,canonical,
+"POST /api/data?category=toys&page=13 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=%3Becho%20webguard_cmd_test HTTP/1.1
+Host: app.example.com
+",1,Command Injection,CWE-78,percent_encoded,;echo webguard_cmd_test
+https://example.com/search?q=1%20WAITFOR%20DELAY%20%270%3A0%3A3%27--,1,SQL Injection,CWE-89,percent_encoded,1 WAITFOR DELAY '0:0:3'--
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=gopher://internal:70/_x",1,SSRF,CWE-918,canonical,gopher://internal:70/_x
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=https%3A%2F%2Fwebguard-evil.example%2F",1,Open Redirect,CWE-601,percent_encoded,https://webguard-evil.example/
+"POST /settings?category=health&page=6 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/products?page=99&sort=newest,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%252e%252e%252f%252e%252e%252fetc%252fpasswd",1,Path Traversal,CWE-22,percent_encoded,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+https://shop.com/about?page=99&sort=name_asc,0,benign,-,canonical,
+https://blog.com/contact?page=24&sort=name_asc,0,benign,-,canonical,
+"GET /search?category=toys&page=5 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://api.example.com/dashboard?page=97&sort=newest,0,benign,-,canonical,
+"GET /profile?user=%3Cimg%20src%3Dx%20onerror%3Dwebguard_xss_test%3E HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,percent_encoded,<img src=x onerror=webguard_xss_test>
+"POST /about?category=clothing&page=16 HTTP/1.1
+Host: shop.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1 WAITFOR DELAY '0:0:3'--",1,SQL Injection,CWE-89,canonical,1 WAITFOR DELAY '0:0:3'--
+"GET /profile?user={{7*7}} HTTP/1.1
+Host: app.example.com
+",1,SSTI,CWE-94,case_whitespace_mangled,{{7*7}}
+https://shop.example.com/item?id=HtTp://169.254.169.254/lAtEsT/MeTa-dAtA/&ref=home,1,SSRF,CWE-918,case_whitespace_mangled,http://169.254.169.254/latest/meta-data/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%27%20UNION%20SELECT%20NULL--",1,SQL Injection,CWE-89,percent_encoded,' UNION SELECT NULL--
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=1  /**/ AND  /**/ SLEEP(1)",1,SQL Injection,CWE-89,case_whitespace_mangled,1 AND SLEEP(1)
+https://shop.example.com/item?id=%26%26echo%20webguard_cmd_test&ref=home,1,Command Injection,CWE-78,percent_encoded,&&echo webguard_cmd_test
+"GET /contact?category=books&page=17 HTTP/1.1
+Host: store.example.com
+Accept: application/json",0,benign,-,canonical,
+https://store.example.com/settings?page=73&sort=newest,0,benign,-,canonical,
+https://example.com/search?q={% print(7*7) %},1,SSTI,CWE-94,canonical,{% print(7*7) %}
+"GET /api/data?category=clothing&page=9 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=1  /**/ WAITFOR  /**/ DELAY  /**/ '0:0:3'-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,1 WAITFOR DELAY '0:0:3'--
+"GET /search?category=clothing&page=11 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=webguard_xss_test%3Cb%3E HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,percent_encoded,webguard_xss_test<b>
+"POST /user/profile?category=food&page=3 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://portal.company.com/search?page=94&sort=price_asc,0,benign,-,canonical,
+"GET /profile?user='  /**/ UNION  /**/ SELECT  /**/ NULL-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,' UNION SELECT NULL--
+"GET /profile?user=gopher://internal:70/_x HTTP/1.1
+Host: app.example.com
+",1,SSRF,CWE-918,canonical,gopher://internal:70/_x
+https://cdn.site.org/user/profile?page=68&sort=newest,0,benign,-,canonical,
+"GET /home?category=books&page=14 HTTP/1.1
+Host: app.service.com
+Accept: application/json",0,benign,-,canonical,
+https://cdn.site.org/contact?page=64&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=<img src=x onerror=webguard_xss_test>&ref=home,1,XSS,CWE-79,canonical,<img src=x onerror=webguard_xss_test>
+https://app.service.com/products?page=78&sort=popular,0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=%3Cscript%3Ewebguard_xss_test%3C%2Fscript%3E",1,XSS,CWE-79,percent_encoded,<script>webguard_xss_test</script>
+https://news.io/dashboard?page=18&sort=newest,0,benign,-,canonical,
+"POST /search?category=sports&page=20 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+https://shop.example.com/item?id=%2F%2Fwebguard-evil.example%2F&ref=home,1,Open Redirect,CWE-601,percent_encoded,//webguard-evil.example/
+https://shop.example.com/item?id=%2e%2e%2f%2e%2e%2fetc%2fpasswd&ref=home,1,Path Traversal,CWE-22,canonical,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+"GET /user/profile?category=books&page=12 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"POST /help?category=toys&page=20 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /home?category=toys&page=16 HTTP/1.1
+Host: api.example.com
+Accept: application/json",0,benign,-,canonical,
+"GET /profile?user=%252e%252e%252f%252e%252e%252fetc%252fpasswd HTTP/1.1
+Host: app.example.com
+",1,Path Traversal,CWE-22,percent_encoded,%2e%2e%2f%2e%2e%2fetc%2fpasswd
+"GET /profile?user=' HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,'
+"GET /profile?user=<!DOCTYPE  /**/ FoO  /**/ [<!ENTITY  /**/ XxE  /**/ SYSTEM  /**/ ""FiLe:///EtC/PaSsWd"">]> HTTP/1.1
+Host: app.example.com
+",1,XXE,CWE-611,case_whitespace_mangled,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://portal.company.com/settings?page=53&sort=price_desc,0,benign,-,canonical,
+"GET /api/data?category=food&page=15 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=//webguard-evil.example/",1,Open Redirect,CWE-601,canonical,//webguard-evil.example/
+"GET /api/data?category=toys&page=4 HTTP/1.1
+Host: portal.company.com
+Accept: application/json",0,benign,-,canonical,
+"GET /products?category=clothing&page=10 HTTP/1.1
+Host: blog.com
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=&&EcHo  /**/ wEbGuArD_CmD_TeSt",1,Command Injection,CWE-78,case_whitespace_mangled,&&echo webguard_cmd_test
+https://shop.com/contact?page=81&sort=newest,0,benign,-,canonical,
+https://shop.example.com/item?id=' OR '1'='1'--&ref=home,1,SQL Injection,CWE-89,canonical,' OR '1'='1'--
+https://shop.com/api/data?page=58&sort=price_asc,0,benign,-,canonical,
+"POST /products?category=clothing&page=10 HTTP/1.1
+Host: news.io
+Accept: application/json",0,benign,-,canonical,
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F",1,SSRF,CWE-918,percent_encoded,http://169.254.169.254/latest/meta-data/
+"GET /profile?user=%2F%2Fwebguard-evil.example%2F HTTP/1.1
+Host: app.example.com
+",1,Open Redirect,CWE-601,percent_encoded,//webguard-evil.example/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=<sCrIpT>WeBgUaRd_xSs_tEsT</sCrIpT>",1,XSS,CWE-79,case_whitespace_mangled,<script>webguard_xss_test</script>
+"GET /profile?user=' OR '1'='1'-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,canonical,' OR '1'='1'--
+"GET /profile?user='  /**/ OR  /**/ '1'='1'-- HTTP/1.1
+Host: app.example.com
+",1,SQL Injection,CWE-89,case_whitespace_mangled,' OR '1'='1'--
+"GET /dashboard?category=books&page=10 HTTP/1.1
+Host: cdn.site.org
+Accept: application/json",0,benign,-,canonical,
+https://blog.com/api/data?page=84&sort=price_asc,0,benign,-,canonical,
+https://shop.example.com/item?id=<sCrIpT>WeBgUaRd_xSs_tEsT</sCrIpT>&ref=home,1,XSS,CWE-79,case_whitespace_mangled,<script>webguard_xss_test</script>
+https://portal.company.com/api/data?page=34&sort=price_asc,0,benign,-,canonical,
+"GET /profile?user=<iMg  /**/ sRc=x  /**/ oNeRrOr=wEbGuArD_XsS_TeSt> HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,case_whitespace_mangled,<img src=x onerror=webguard_xss_test>
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=..%2F..%2F..%2F..%2Fetc%2Fpasswd",1,Path Traversal,CWE-22,percent_encoded,../../../../etc/passwd
+https://example.com/search?q=http://169.254.169.254/latest/meta-data/,1,SSRF,CWE-918,canonical,http://169.254.169.254/latest/meta-data/
+"POST /api/submit HTTP/1.1
+Host: service.example.com
+Content-Type: application/x-www-form-urlencoded
+
+data=http%3A%2F%2F127.0.0.1%3A6379%2F",1,SSRF,CWE-918,percent_encoded,http://127.0.0.1:6379/
+"https://shop.example.com/item?id=<!DOCTYPE  /**/ FoO  /**/ [<!ENTITY  /**/ XxE  /**/ SYSTEM  /**/ ""FiLe:///EtC/PaSsWd"">]>&ref=home",1,XXE,CWE-611,case_whitespace_mangled,"<!DOCTYPE foo [<!ENTITY xxe SYSTEM ""file:///etc/passwd"">]>"
+https://example.com/search?q=%27%20OR%20%271%27%3D%271%27--,1,SQL Injection,CWE-89,percent_encoded,' OR '1'='1'--
+"GET /profile?user=javascript:webguard_xss_test HTTP/1.1
+Host: app.example.com
+",1,XSS,CWE-79,canonical,javascript:webguard_xss_test
+https://shop.com/about?page=44&sort=newest,0,benign,-,canonical,

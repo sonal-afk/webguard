@@ -1,0 +1,37 @@
+{
+  "_note": "Snapshot of benchmark/results.json captured BEFORE the percent-encoding decode fix was applied to webguard/backend.py's detect_patterns(). Preserved for before/after comparison (see paper Table IV and DEFENSE.md). The current benchmark/results.json reflects the pipeline AFTER the fix.",
+  "hardware": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD"
+  },
+  "dataset": {
+    "n": 672
+  },
+  "overall": {
+    "pattern": {"tp": 152, "tn": 336, "fp": 0, "fn": 184, "precision": 1.0, "recall": 0.4524, "f1": 0.623, "accuracy": 0.7262, "n": 672},
+    "ml":      {"tp": 12,  "tn": 336, "fp": 0, "fn": 324, "precision": 1.0, "recall": 0.0357, "f1": 0.069, "accuracy": 0.5179, "n": 672},
+    "hybrid":  {"tp": 154, "tn": 336, "fp": 0, "fn": 182, "precision": 1.0, "recall": 0.4583, "f1": 0.6286, "accuracy": 0.7292, "n": 672}
+  },
+  "by_variant": {
+    "canonical": {
+      "pattern": {"tp": 72, "tn": 336, "fp": 0, "fn": 40, "precision": 1.0, "recall": 0.6429, "f1": 0.7826, "accuracy": 0.9107, "n": 448},
+      "ml":      {"tp": 1,  "tn": 336, "fp": 0, "fn": 111, "precision": 1.0, "recall": 0.0089, "f1": 0.0177, "accuracy": 0.7522, "n": 448},
+      "hybrid":  {"tp": 72, "tn": 336, "fp": 0, "fn": 40, "precision": 1.0, "recall": 0.6429, "f1": 0.7826, "accuracy": 0.9107, "n": 448}
+    },
+    "case_whitespace_mangled": {
+      "pattern": {"tp": 66, "tn": 336, "fp": 0, "fn": 46, "precision": 1.0, "recall": 0.5893, "f1": 0.7416, "accuracy": 0.8973, "n": 448},
+      "ml":      {"tp": 9,  "tn": 336, "fp": 0, "fn": 103, "precision": 1.0, "recall": 0.0804, "f1": 0.1488, "accuracy": 0.7701, "n": 448},
+      "hybrid":  {"tp": 66, "tn": 336, "fp": 0, "fn": 46, "precision": 1.0, "recall": 0.5893, "f1": 0.7416, "accuracy": 0.8973, "n": 448}
+    },
+    "percent_encoded": {
+      "pattern": {"tp": 14, "tn": 336, "fp": 0, "fn": 98, "precision": 1.0, "recall": 0.125, "f1": 0.2222, "accuracy": 0.7812, "n": 448},
+      "ml":      {"tp": 2,  "tn": 336, "fp": 0, "fn": 110, "precision": 1.0, "recall": 0.0179, "f1": 0.0351, "accuracy": 0.7545, "n": 448},
+      "hybrid":  {"tp": 16, "tn": 336, "fp": 0, "fn": 96, "precision": 1.0, "recall": 0.1429, "f1": 0.25, "accuracy": 0.7857, "n": 448}
+    }
+  },
+  "latency_ms": {
+    "pattern": 0.1023,
+    "ml": 19.2707,
+    "hybrid": 19.5309
+  }
+}

@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGuard — Web Vulnerability Scanner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── RESET & BASE ─────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #090d14;
+            --surface: #0e1520;
+            --surface2: #141d2b;
+            --border: #1e2d42;
+            --accent: #00e5ff;
+            --accent2: #7c3aed;
+            --danger: #ff3b5c;
+            --safe: #00e87a;
+            --warn: #ffb020;
+            --text: #c9d8ee;
+            --muted: #5a7090;
+            --mono: 'Space Mono', monospace;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 15px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle scan-line texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 229, 255, .015) 2px,
+                    rgba(0, 229, 255, .015) 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── GRID NOISE BACKGROUND ────────────────────────── */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, .04) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── PAGES ────────────────────────────────────────── */
+        .page {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .4s, transform .4s;
+        }
+
+        .page.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+
+        /* ── LOGIN PAGE ───────────────────────────────────── */
+        #loginPage {
+            flex-direction: column;
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 44px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: -80px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(0, 229, 255, .15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(124, 58, 237, .12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            font-family: var(--mono);
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-tag {
+            font-size: .7em;
+            color: var(--accent);
+            font-family: var(--mono);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .login-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .login-sub {
+            color: var(--muted);
+            font-size: .9em;
+            margin-bottom: 32px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: .8em;
+            font-family: var(--mono);
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: .9em;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, .1);
+        }
+
+        .field input::placeholder {
+            color: var(--muted);
+        }
+
+        .login-err {
+            background: rgba(255, 59, 92, .1);
+            border: 1px solid rgba(255, 59, 92, .3);
+            color: var(--danger);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: .85em;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent) 0%, #00aacc 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-family: var(--mono);
+            font-size: .95em;
+            font-weight: 700;
+            letter-spacing: .5px;
+            cursor: pointer;
+            transition: opacity .2s, transform .15s, box-shadow .2s;
+        }
+
+        .btn-primary:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(0, 229, 255, .25);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: .8em;
+            color: var(--muted);
+        }
+
+        .login-footer span {
+            color: var(--accent);
+            font-family: var(--mono);
+        }
+
+        /* ── SCANNER PAGE ─────────────────────────────────── */
+        #scannerPage {
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            overflow-y: auto;
+        }
+
+        /* Top Nav */
+        .topnav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(9, 13, 20, .9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 0 28px;
+            height: 60px;
+            flex-shrink: 0;
+        }
+
+        .nav-brand {
+            font-family: var(--mono);
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .nav-spacer {
+            flex: 1;
+        }
+
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: .75em;
+            font-family: var(--mono);
+            color: var(--muted);
+        }
+
+        .nav-pill .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--safe);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .85em;
+            color: var(--text);
+        }
+
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            font-family: var(--mono);
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: .75em;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: border-color .2s, color .2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Main layout */
+        .main {
+            flex: 1;
+            padding: 28px;
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .stat-card.c1::after {
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .stat-card.c2::after {
+            background: linear-gradient(90deg, var(--danger), transparent);
+        }
+
+        .stat-card.c3::after {
+            background: linear-gradient(90deg, var(--warn), transparent);
+        }
+
+        .stat-card.c4::after {
+            background: linear-gradient(90deg, var(--safe), transparent);
+        }
+
+        .stat-label {
+            font-size: .72em;
+            font-family: var(--mono);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: var(--mono);
+            font-size: 2em;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .stat-sub {
+            font-size: .75em;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Scanner grid */
+        .scanner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-head h2 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .panel-head .badge {
+            font-family: var(--mono);
+            font-size: .68em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge-blue {
+            background: rgba(0, 229, 255, .12);
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, .2);
+        }
+
+        .badge-green {
+            background: rgba(0, 232, 122, .12);
+            color: var(--safe);
+            border: 1px solid rgba(0, 232, 122, .2);
+        }
+
+        .panel-body {
+            padding: 22px;
+        }
+
+        /* URL / Payload input */
+        .input-group {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, .1);
+        }
+
+        .input-prefix {
+            background: var(--surface2);
+            border-right: 1px solid var(--border);
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            font-family: var(--mono);
+            font-size: .75em;
+            color: var(--muted);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #urlInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 12px 14px;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: .88em;
+        }
+
+        #urlInput::placeholder {
+            color: var(--muted);
+        }
+
+        /* Textarea for raw payload */
+        .textarea-wrap {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .textarea-label {
+            font-size: .72em;
+            font-family: var(--mono);
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 220px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: .83em;
+            resize: vertical;
+            outline: none;
+            transition: border-color .2s;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        textarea::placeholder {
+            color: var(--muted);
+        }
+
+        /* Scan type tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            font-size: .78em;
+            font-family: var(--mono);
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background .2s, color .2s;
+        }
+
+        .tab.active {
+            background: var(--surface2);
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, .2);
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-scan {
+            flex: 1;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--accent) 0%, #0088bb 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-family: var(--mono);
+            font-size: .9em;
+            font-weight: 700;
+            letter-spacing: .5px;
+            cursor: pointer;
+            transition: opacity .2s, transform .15s, box-shadow .2s;
+        }
+
+        .btn-scan:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 229, 255, .3);
+        }
+
+        .btn-scan:active {
+            transform: translateY(0);
+        }
+
+        .btn-scan:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-clear {
+            padding: 13px 18px;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: .85em;
+            cursor: pointer;
+            transition: border-color .2s, color .2s;
+        }
+
+        .btn-clear:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Results panel */
+        .results-area {
+            min-height: 340px;
+        }
+
+        .placeholder-msg {
+            height: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            gap: 14px;
+        }
+
+        .placeholder-icon {
+            font-size: 2.8em;
+            opacity: .4;
+        }
+
+        .placeholder-msg p {
+            font-family: var(--mono);
+            font-size: .8em;
+            letter-spacing: 1px;
+        }
+
+        /* Loading */
+        .loading-state {
+            height: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .scan-ring {
+            width: 56px;
+            height: 56px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-state p {
+            font-family: var(--mono);
+            font-size: .82em;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* Result card */
+        .result-card {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid;
+        }
+
+        .result-card.vuln {
+            border-color: rgba(255, 59, 92, .35);
+            background: rgba(255, 59, 92, .05);
+        }
+
+        .result-card.safe {
+            border-color: rgba(0, 232, 122, .3);
+            background: rgba(0, 232, 122, .05);
+        }
+
+        .result-card.warn {
+            border-color: rgba(255, 176, 32, .4);
+            background: rgba(255, 176, 32, .05);
+        }
+
+        .result-card.warn {
+            border-color: rgba(255, 176, 32, .35);
+            background: rgba(255, 176, 32, .05);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+        }
+
+        .verdict-badge {
+            font-family: var(--mono);
+            font-size: .75em;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .verdict-badge.vuln {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .verdict-badge.safe {
+            background: var(--safe);
+            color: #000;
+        }
+
+        .verdict-badge.warn {
+            background: var(--warn);
+            color: #000;
+        }
+
+        .conf-bar-wrap {
+            flex: 1;
+        }
+
+        .conf-label {
+            font-size: .72em;
+            font-family: var(--mono);
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .conf-track {
+            height: 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .conf-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width .6s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .conf-fill.vuln {
+            background: linear-gradient(90deg, var(--danger), #ff6b6b);
+        }
+
+        .conf-fill.safe {
+            background: linear-gradient(90deg, var(--safe), #00ff99);
+        }
+
+        .conf-fill.warn {
+            background: var(--warn);
+        }
+
+        .conf-pct {
+            font-family: var(--mono);
+            font-size: .8em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .result-body {
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .info-key {
+            font-family: var(--mono);
+            font-size: .72em;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            min-width: 90px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .info-val {
+            font-size: .85em;
+            color: var(--text);
+        }
+
+        /* Findings list */
+        .findings-block {
+            background: rgba(255, 176, 32, .06);
+            border: 1px solid rgba(255, 176, 32, .2);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .findings-title {
+            font-family: var(--mono);
+            font-size: .72em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--warn);
+            margin-bottom: 10px;
+        }
+
+        .finding-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 176, 32, .1);
+            border: 1px solid rgba(255, 176, 32, .25);
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 3px;
+            font-family: var(--mono);
+            font-size: .75em;
+        }
+
+        .sev-badge {
+            font-size: .65em;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+
+        .sev-CRITICAL {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .sev-HIGH {
+            background: #ff7c00;
+            color: #fff;
+        }
+
+        .sev-MEDIUM {
+            background: var(--warn);
+            color: #000;
+        }
+
+        .sev-LOW {
+            background: var(--muted);
+            color: #fff;
+        }
+
+        /* Similar vulns */
+        .similar-block {
+            background: rgba(0, 229, 255, .04);
+            border: 1px solid rgba(0, 229, 255, .15);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .similar-title {
+            font-family: var(--mono);
+            font-size: .72em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .similar-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            font-family: var(--mono);
+            font-size: .76em;
+            color: var(--muted);
+        }
+
+        .similar-item strong {
+            color: var(--text);
+        }
+
+        /* Safe banner */
+        .safe-banner {
+            background: rgba(0, 232, 122, .07);
+            border: 1px solid rgba(0, 232, 122, .25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .85em;
+            color: var(--safe);
+        }
+
+        /* History panel (bottom) */
+        .history-panel {
+            margin-top: 20px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82em;
+        }
+
+        .history-table th {
+            font-family: var(--mono);
+            font-size: .7em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            font-family: var(--mono);
+            font-size: .82em;
+            color: var(--text);
+            max-width: 320px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-table tr:hover td {
+            background: var(--surface2);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 12px;
+            font-size: .75em;
+            font-weight: 700;
+        }
+
+        .pill.vuln {
+            background: rgba(255, 59, 92, .15);
+            color: var(--danger);
+        }
+
+        .pill.safe {
+            background: rgba(0, 232, 122, .15);
+            color: var(--safe);
+        }
+
+        .pill.warn {
+            background: rgba(255, 176, 32, .15);
+            color: var(--warn);
+        }
+
+        /* Responsive */
+
+        /* ── AI SIDEBAR ──────────────────────────────────────── */
+        .ai-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            padding: 40px 10px;
+            color: var(--muted);
+        }
+
+        .ai-ring {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent2);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .ai-section {
+            margin-bottom: 20px;
+        }
+
+        .ai-section-title {
+            font-family: var(--mono);
+            font-size: .68em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ai-section-title.warn {
+            color: var(--warn);
+        }
+
+        .ai-section-title.safe {
+            color: var(--safe);
+        }
+
+        .ai-section-title.danger {
+            color: var(--danger);
+        }
+
+        .ai-text {
+            font-size: .82em;
+            color: var(--text);
+            line-height: 1.75;
+        }
+
+        .ai-text p {
+            margin-bottom: 8px;
+        }
+
+        .prevention-item {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 229, 255, .04);
+            border: 1px solid rgba(0, 229, 255, .12);
+            border-radius: 6px;
+            padding: 9px 11px;
+            margin-bottom: 7px;
+            font-size: .8em;
+            line-height: 1.6;
+        }
+
+        .prevention-num {
+            font-family: var(--mono);
+            font-size: .75em;
+            color: var(--accent);
+            font-weight: 700;
+            min-width: 18px;
+            margin-top: 1px;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: .65em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            letter-spacing: 1px;
+        }
+
+        .ai-badge.red {
+            background: rgba(255, 59, 92, .15);
+            color: var(--danger);
+            border: 1px solid rgba(255, 59, 92, .3);
+        }
+
+        .ai-badge.yellow {
+            background: rgba(255, 176, 32, .15);
+            color: var(--warn);
+            border: 1px solid rgba(255, 176, 32, .3);
+        }
+
+        .ai-badge.green {
+            background: rgba(0, 232, 122, .15);
+            color: var(--safe);
+            border: 1px solid rgba(0, 232, 122, .3);
+        }
+
+        .ai-badge.blue {
+            background: rgba(0, 229, 255, .1);
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, .2);
+        }
+
+        .ai-error {
+            background: rgba(255, 59, 92, .07);
+            border: 1px solid rgba(255, 59, 92, .2);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: .8em;
+            color: var(--danger);
+            font-family: var(--mono);
+        }
+
+        @media (max-width: 1024px) {
+            .scanner-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .main {
+                padding: 16px;
+            }
+
+            .topnav {
+                padding: 0 16px;
+            }
+
+            .login-card {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+        }
+
+        /* ── VERIFY BANNER ── */
+        .verify-banner {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255, 176, 32, .08);
+            border: 1px solid rgba(255, 176, 32, .3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: .78em;
+            color: var(--warn);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        /* ── TARGETS MODAL ── */
+        .wg-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,.6);
+            z-index: 999; display: flex; align-items: flex-start; justify-content: center;
+            padding-top: 60px;
+        }
+        .wg-overlay.hidden { display: none; }
+        .wg-modal {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; width: 560px; max-width: 92vw; max-height: 80vh;
+            overflow-y: auto; padding: 22px 24px;
+        }
+        .wg-modal h3 { color: #fff; margin-bottom: 4px; }
+        .wg-modal .sub { color: var(--muted); font-size: .8em; margin-bottom: 16px; }
+        .target-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+            margin-bottom: 6px; font-family: var(--mono); font-size: .78em;
+        }
+        .target-row button {
+            background: none; border: 1px solid var(--danger); color: var(--danger);
+            border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: .9em;
+        }
+        .confirm-row {
+            display: flex; align-items: flex-start; gap: 8px; margin: 12px 0;
+            font-size: .8em; color: var(--text); line-height: 1.4;
+        }
+        .confirm-row input[type=checkbox] { margin-top: 3px; }
+        .wg-modal-close {
+            float: right; background: none; border: none; color: var(--muted);
+            font-size: 1.2em; cursor: pointer;
+        }
+
+        /* ── GUIDED SCAN STEPPER ── */
+        .stepper { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+        .step-pill {
+            font-family: var(--mono); font-size: .7em; letter-spacing: .5px;
+            padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border);
+            color: var(--muted);
+        }
+        .step-pill.active { border-color: var(--accent2); color: var(--accent2); background: rgba(124,58,237,.1); }
+        .step-pill.done { border-color: var(--safe); color: var(--safe); }
+
+        .surface-group { margin-bottom: 14px; }
+        .surface-group-title { font-family: var(--mono); font-size: .72em; color: var(--muted); margin-bottom: 6px; letter-spacing: .5px; }
+        .surface-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px;
+            margin-bottom: 4px; font-size: .78em; font-family: var(--mono);
+            word-break: break-all;
+        }
+        .vector-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+        .vector-chip {
+            display: flex; align-items: center; gap: 6px;
+            border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px;
+            font-size: .78em; cursor: pointer;
+        }
+        .vector-chip.slow { border-color: rgba(255,176,32,.4); }
+
+        .raw-toggle {
+            background: none; border: none; color: var(--accent); cursor: pointer;
+            font-family: var(--mono); font-size: .72em; padding: 0; margin-top: 6px;
+        }
+        .raw-panel {
+            display: none; margin-top: 6px; background: rgba(0,0,0,.25);
+            border-radius: 6px; padding: 8px 10px; font-family: var(--mono);
+            font-size: .7em; color: var(--text); max-height: 200px; overflow-y: auto;
+            white-space: pre-wrap; word-break: break-all;
+        }
+        .raw-panel.open { display: block; }
+
+        .review-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+        .review-btn {
+            font-family: var(--mono); font-size: .68em; padding: 4px 9px;
+            border-radius: 4px; cursor: pointer; border: 1px solid var(--border);
+            background: none; color: var(--muted);
+        }
+        .review-btn.confirm  { border-color: var(--danger); color: var(--danger); }
+        .review-btn.fp       { border-color: var(--muted);  color: var(--muted); }
+        .review-btn.needs    { border-color: var(--warn);   color: var(--warn); }
+        .review-btn.selected.confirm { background: var(--danger); color: #fff; }
+        .review-btn.selected.fp      { background: var(--muted);  color: #000; }
+        .review-btn.selected.needs   { background: var(--warn);   color: #000; }
+    </style>
+</head>
+
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- ══════════════════════════════════════
+         LOGIN PAGE
+    ══════════════════════════════════════ -->
+    <div class="page" id="loginPage">
+        <div class="login-card">
+            <div class="brand">
+                <div class="brand-icon">🛡</div>
+                <div>
+                    <div class="brand-name">WebGuard</div>
+                    <div class="brand-tag">Threat Intelligence</div>
+                </div>
+            </div>
+
+            <div class="login-title">Sign in</div>
+            <p class="login-sub">Access the web vulnerability scanner</p>
+
+            <div class="login-err" id="loginErr">Incorrect username or password.</div>
+
+            <div class="field">
+                <label>Username</label>
+                <input type="text" id="loginUser" placeholder="analyst" autocomplete="username" />
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+
+            <button class="btn-primary" id="loginBtn" onclick="doLogin()">→ Sign in</button>
+
+            <p class="login-footer">Demo credentials: <span>admin</span> / <span>admin123</span></p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SCANNER PAGE
+    ══════════════════════════════════════ -->
+    <div class="page hidden" id="scannerPage">
+
+        <!-- Nav -->
+        <nav class="topnav">
+            <div class="nav-brand">
+                <div class="nav-brand-icon">🛡</div>
+                WebGuard
+            </div>
+            <div class="nav-pill">
+                <span class="dot"></span>
+                <span>Model Online</span>
+            </div>
+            <div class="nav-spacer"></div>
+            <div class="nav-user">
+                <button class="btn-logout" style="border-color:var(--accent2);color:var(--accent2);" onclick="openTargetsModal()">🔐 Authorized Targets</button>
+                <div class="nav-avatar" id="navAvatar">A</div>
+                <span id="navUsername">analyst</span>
+                <button class="btn-logout" onclick="doLogout()">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Authorized Targets modal -->
+        <div class="wg-overlay hidden" id="targetsOverlay">
+            <div class="wg-modal">
+                <button class="wg-modal-close" onclick="closeTargetsModal()">&times;</button>
+                <h3>🔐 Authorized Targets</h3>
+                <div class="sub">
+                    WebGuard only sends live requests to hosts on this list. Static analysis
+                    (pasted text/URLs) never leaves this list requirement because it never
+                    contacts the target — Guided Deep Scan does, so it's gated here.
+                </div>
+
+                <div id="targetsList" style="margin-bottom:16px;">
+                    <div style="color:var(--muted);font-size:.78em;">Loading…</div>
+                </div>
+
+                <div style="border-top:1px solid var(--border);padding-top:14px;">
+                    <div class="textarea-label">Add a target you own or have written permission to test</div>
+                    <div class="input-group" style="margin-bottom:8px;">
+                        <span class="input-prefix">HOST</span>
+                        <input type="text" id="newTargetUrl" placeholder="https://127.0.0.1:9000" />
+                    </div>
+                    <div class="input-group" style="margin-bottom:8px;">
+                        <span class="input-prefix">NOTE</span>
+                        <input type="text" id="newTargetNote" placeholder="e.g. local demo server, my own staging site" />
+                    </div>
+                    <label class="confirm-row">
+                        <input type="checkbox" id="newTargetConfirm" onchange="document.getElementById('addTargetBtn').disabled = !this.checked">
+                        <span>I confirm I own this system, or I have explicit written authorization to test it.
+                        Scanning systems without permission may be illegal.</span>
+                    </label>
+                    <button class="btn-scan" id="addTargetBtn" disabled onclick="addAuthorizedTarget()">+ Add Target</button>
+                    <div id="targetsAddErr" style="color:var(--danger);font-size:.78em;margin-top:8px;display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content wrapper: sidebar + main -->
+        <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
+
+            <!-- AI Explainer Sidebar -->
+            <aside id="aiSidebar" style="
+            width:320px;flex-shrink:0;
+            background:var(--surface);
+            border-right:1px solid var(--border);
+            display:flex;flex-direction:column;
+            overflow:hidden;
+        ">
+                <div
+                    style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+                    <div
+                        style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">
+                        🤖</div>
+                    <div>
+                        <div style="font-weight:600;color:#fff;font-size:.9em;">AI Security Analyst</div>
+                        <div style="font-size:.7em;font-family:var(--mono);color:var(--muted);letter-spacing:1px;">
+                            GEMINI · BUILT-IN FALLBACK</div>
+                    </div>
+                </div>
+                <div id="aiContent" style="flex:1;overflow-y:auto;padding:18px;">
+                    <div style="text-align:center;padding:40px 10px;color:var(--muted);">
+                        <div style="font-size:2em;opacity:.3;margin-bottom:12px;">🔍</div>
+                        <p style="font-family:var(--mono);font-size:.75em;letter-spacing:1px;line-height:1.8;">Run a
+                            scan to get an AI explanation of the vulnerability and prevention steps</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <div class="main" style="flex:1;overflow-y:auto;">
+
+                <!-- Stats -->
+                <div class="stats-row">
+                    <div class="stat-card c1">
+                        <div class="stat-label">DB Entries</div>
+                        <div class="stat-value" id="statVulns">—</div>
+                        <div class="stat-sub">Vulnerabilities indexed</div>
+                    </div>
+                    <div class="stat-card c2">
+                        <div class="stat-label">Total Scans</div>
+                        <div class="stat-value" id="statScans">—</div>
+                        <div class="stat-sub">Requests analysed</div>
+                    </div>
+                    <div class="stat-card c3">
+                        <div class="stat-label">Attack Types</div>
+                        <div class="stat-value">9</div>
+                        <div class="stat-sub">Detection categories</div>
+                    </div>
+                    <div class="stat-card c4">
+                        <div class="stat-label">Model</div>
+                        <div class="stat-value" style="font-size:1.1em;padding-top:4px">CodeBERT</div>
+                        <div class="stat-sub">Fine-tuned on web attacks</div>
+                    </div>
+                </div>
+
+                <!-- Scanner + Results -->
+                <div class="scanner-grid">
+
+                    <!-- INPUT PANEL -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>Scan Input</h2>
+                            <span class="badge badge-blue">Website / Payload</span>
+                        </div>
+                        <div class="panel-body">
+
+                            <!-- Scan type tabs -->
+                            <div class="tabs">
+                                <div class="tab active" onclick="setTab('url',this)">URL / Endpoint</div>
+                                <div class="tab" onclick="setTab('payload',this)">Raw Payload</div>
+                                <div class="tab" onclick="setTab('request',this)">HTTP Request</div>
+                            </div>
+
+                            <!-- URL input (shown for URL tab) -->
+                            <div id="tabUrl">
+                                <div class="input-group">
+                                    <span class="input-prefix">TARGET</span>
+                                    <input type="text" id="urlInput" placeholder="https://example.com/login?id=1"
+                                        onkeydown="if(e&&e.key==='Enter')doScan()" />
+                                </div>
+                                <div style="margin-bottom:14px;">
+                                    <div class="textarea-label">HTTP Headers / Parameters (optional)</div>
+                                    <textarea id="extraInput" rows="4" style="height:140px"
+                                        placeholder="User-Agent: Mozilla/5.0&#10;Cookie: session=abc123&#10;X-Forwarded-For: 127.0.0.1"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Raw payload input (shown for payload tab) -->
+                            <div id="tabPayload" style="display:none">
+                                <div class="textarea-label">Paste payload / web attack vector</div>
+                                <textarea id="payloadInput" style="height:220px"
+                                    placeholder="' OR 1=1--&#10;&lt;script&gt;alert(1)&lt;/script&gt;&#10;../../../../etc/passwd&#10;cmd=ls;cat /etc/passwd"></textarea>
+                            </div>
+
+                            <!-- HTTP Request (raw) -->
+                            <div id="tabRequest" style="display:none">
+                                <div class="textarea-label">Raw HTTP Request</div>
+                                <textarea id="requestInput" style="height:220px"
+                                    placeholder="POST /login HTTP/1.1&#10;Host: example.com&#10;Content-Type: application/x-www-form-urlencoded&#10;&#10;username=admin'--&amp;password=x"></textarea>
+                            </div>
+
+                            <div style="font-size:.72em;color:var(--muted);margin-bottom:10px;">
+                                Static Scan reads the text/URL you typed locally — it never contacts the
+                                target, so it needs no authorization. To send real requests to a live
+                                target, use <strong>Guided Deep Scan</strong> below, which requires the
+                                target to be on your Authorized Targets list first.
+                            </div>
+                             <div class="action-row">
+                                <button class="btn-scan" id="scanBtn" onclick="doScan()">⚡ Scan Now (Static)</button>
+                                <button class="btn-clear" onclick="doClear()">Clear</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- RESULTS PANEL -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>Analysis Results</h2>
+                            <span class="badge badge-green" id="resultBadge">Awaiting Scan</span>
+                        </div>
+                        <div class="panel-body results-area">
+                            <div id="resultsContent">
+                                <div class="placeholder-msg">
+                                    <div class="placeholder-icon">🔍</div>
+                                    <p>Enter a URL or payload and click Scan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Guided Deep Scan -->
+                <div class="panel" style="margin-top:20px">
+                    <div class="panel-head">
+                        <h2>🧭 Guided Deep Scan</h2>
+                        <span class="badge badge-blue">Recon → Select → Test → Review → Report</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="verify-banner">
+                            ⚠ Guided Deep Scan sends real requests to the target. It only runs
+                            against Authorized Targets, tests only what you choose, and every
+                            finding must be manually reviewed before it goes in a report — don't
+                            trust an automated alert blindly, check the request/response/source
+                            yourself.
+                        </div>
+
+                        <div class="stepper" id="guidedStepper">
+                            <span class="step-pill active" id="stepPill1">1 · Recon</span>
+                            <span class="step-pill" id="stepPill2">2 · Select &amp; Test</span>
+                            <span class="step-pill" id="stepPill3">3 · Review</span>
+                            <span class="step-pill" id="stepPill4">4 · Report</span>
+                        </div>
+
+                        <div id="guidedStage1">
+                            <div class="input-group" style="margin-bottom:10px;">
+                                <span class="input-prefix">TARGET</span>
+                                <input type="text" id="guidedUrlInput" placeholder="http://127.0.0.1:9000" />
+                            </div>
+                            <button class="btn-scan" id="guidedStartBtn" onclick="startGuidedScan()">🔎 Start Recon</button>
+                            <div id="guidedStage1Msg" style="margin-top:10px;"></div>
+                        </div>
+
+                        <div id="guidedStage2" style="display:none;"></div>
+                        <div id="guidedStage3" style="display:none;"></div>
+                        <div id="guidedStage4" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- Scan History -->
+                <div class="history-panel panel" style="margin-top:20px">
+                    <div class="panel-head">
+                        <h2>Scan History</h2>
+                        <span class="badge badge-blue">Last 20</span>
+                    </div>
+                    <div style="overflow-x:auto">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Input</th>
+                                    <th>Verdict</th>
+                                    <th>Confidence</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody">
+                                <tr>
+                                    <td colspan="5"
+                                        style="text-align:center;color:var(--muted);padding:20px;font-family:var(--mono);font-size:.8em">
+                                        No scans yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div><!-- /main -->
+        </div><!-- /content wrapper -->
+    </div><!-- /scannerPage -->
+
+    <script>
+        // ── AUTH ────────────────────────────────────────────────────
+        let currentUser = null;
+        let scanHistory = [];
+        let activeTab = 'url';
+
+        async function doLogin() {
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value;
+            const err = document.getElementById('loginErr');
+            const btn = document.getElementById('loginBtn');
+
+            btn.disabled = true;
+            btn.textContent = 'Signing in…';
+            err.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                if (response.ok) {
+                    currentUser = u;
+                    document.getElementById('navUsername').textContent = u;
+                    document.getElementById('navAvatar').textContent = u[0].toUpperCase();
+                    document.getElementById('loginPage').classList.add('hidden');
+                    document.getElementById('scannerPage').classList.remove('hidden');
+                    loadStats();
+                    handleQueryHandoff();
+                } else {
+                    const data = await response.json();
+                    err.textContent = data.error || 'Incorrect username or password.';
+                    err.style.display = 'block';
+                }
+            } catch (e) {
+                err.textContent = 'Failed to connect to the server.';
+                err.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '→ Sign in';
+            }
+        }
+
+        async function doLogout() {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+            } catch (e) {
+                console.error('Logout error:', e);
+            }
+            currentUser = null;
+            document.getElementById('scannerPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+        }
+
+        // Check session on page load
+        async function checkSession() {
+            try {
+                const res = await fetch('/api/stats');
+                if (res.ok) {
+                    currentUser = 'admin'; // default display user
+                    document.getElementById('navUsername').textContent = currentUser;
+                    document.getElementById('navAvatar').textContent = currentUser[0].toUpperCase();
+                    document.getElementById('loginPage').classList.add('hidden');
+                    document.getElementById('scannerPage').classList.remove('hidden');
+                    loadStats();
+                    handleQueryHandoff();
+                }
+            } catch (err) {
+                console.error("Session check failed", err);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', checkSession);
+
+        // Allow Enter on login fields
+        ['loginUser', 'loginPass'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+            }
+        });
+
+        // ── TABS ────────────────────────────────────────────────────
+        function setTab(name, el) {
+            activeTab = name;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            ['tabUrl', 'tabPayload', 'tabRequest'].forEach(id =>
+                document.getElementById(id).style.display = 'none'
+            );
+            document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1)).style.display = '';
+        }
+
+        // ── STATS ───────────────────────────────────────────────────
+        async function loadStats() {
+            try {
+                const r = await fetch('/api/stats');
+                if (!r.ok) throw new Error();
+                const d = await r.json();
+                document.getElementById('statVulns').textContent = (d.total_vulnerabilities || 0).toLocaleString();
+                document.getElementById('statScans').textContent = (d.total_scans || 0).toLocaleString();
+            } catch {
+                document.getElementById('statVulns').textContent = '—';
+                document.getElementById('statScans').textContent = '—';
+            }
+        }
+
+        // ── SCAN ────────────────────────────────────────────────────
+        function getInputText() {
+            if (activeTab === 'url') {
+                const url = document.getElementById('urlInput').value.trim();
+                const extra = document.getElementById('extraInput').value.trim();
+                return extra ? url + '\n' + extra : url;
+            } else if (activeTab === 'payload') {
+                return document.getElementById('payloadInput').value.trim();
+            } else {
+                return document.getElementById('requestInput').value.trim();
+            }
+        }
+
+        async function doScan() {
+            const input = getInputText();
+            if (!input) { alert('Please enter a URL or payload to scan.'); return; }
+
+            const scanBtn = document.getElementById('scanBtn');
+            const activeScanBtn = document.getElementById('activeScanBtn');
+            const resultsDiv = document.getElementById('resultsContent');
+            const badge = document.getElementById('resultBadge');
+
+            scanBtn.disabled = true;
+            if (activeScanBtn) activeScanBtn.disabled = true;
+            scanBtn.textContent = '⏳ Scanning…';
+            badge.textContent = 'Scanning…';
+            badge.className = 'badge badge-blue';
+
+            resultsDiv.innerHTML = `
+            <div class="loading-state">
+                <div class="scan-ring"></div>
+                <p>Analysing with CodeBERT + pattern engine…</p>
+            </div>`;
+
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: input })
+                });
+                const data = await res.json();
+                renderResult(data, input, 'static');
+                addToHistory(input, data);
+                loadStats();
+                getAIExplanation(data, input);
+            } catch (err) {
+                resultsDiv.innerHTML = `
+                <div class="result-card vuln">
+                    <div class="result-body">
+                        <p style="color:var(--danger);font-family:var(--mono);font-size:.85em">
+                            ⚠️ Connection error — is the backend running?<br>${err.message}
+                        </p>
+                    </div>
+                </div>`;
+                badge.textContent = 'Error';
+            } finally {
+                scanBtn.disabled = false;
+                if (activeScanBtn) activeScanBtn.disabled = false;
+                scanBtn.textContent = '⚡ Scan Now (Static)';
+            }
+        }
+
+        function renderResult(r, input, scanType = 'static') {
+            const resultsDiv = document.getElementById('resultsContent');
+            const badge = document.getElementById('resultBadge');
+            const isVuln = r.vulnerable;
+            const isReview = !isVuln && r.needs_review;
+            const cls = isVuln ? 'vuln' : isReview ? 'warn' : 'safe';
+            const pct = ((r.confidence || 0) * 100).toFixed(1);
+
+            badge.textContent = isVuln ? 'VULNERABLE' : isReview ? 'NEEDS REVIEW' : 'SAFE';
+            badge.className = isVuln ? 'badge badge-blue' : 'badge badge-green';
+
+            let html = `
+        <div class="result-card ${cls}">
+            <div class="result-header">
+                <div class="verdict-badge ${cls}">${isVuln ? '🚨 ' + (scanType === 'active' ? 'EXPLOITABLE' : 'VULNERABLE') : isReview ? '⚠️ NEEDS REVIEW' : '✅ SAFE'}</div>
+                <div class="conf-bar-wrap">
+                    <div class="conf-label">Confidence</div>
+                    <div class="conf-track">
+                        <div class="conf-fill ${cls}" id="confFill" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="conf-pct">${pct}%</div>
+            </div>
+            <div class="result-body">
+                <div class="info-row">
+                    <span class="info-key">ML Label</span>
+                    <span class="info-val">${['PATTERN_MATCH', 'SAFE_PATTERN'].includes(r.ml_label)
+                        ? `${r.ml_label} &nbsp;<small style="color:var(--muted)">(decided by pattern engine — ML not needed)</small>`
+                        : `${r.ml_label || '—'} &nbsp;<small style="color:var(--muted)">(${((r.ml_score || 0) * 100).toFixed(1)}% raw)</small>`}</span>
+                </div>
+                ${isReview ? `<div class="info-row">
+                    <span class="info-key">Why review?</span>
+                    <span class="info-val" style="color:var(--warn)">No attack rule matched; only the AI model flagged this. The model is often wrong on unusual harmless input, so confirm it with a Guided Deep Scan before treating it as real.</span>
+                </div>` : ''}
+                <div class="info-row">
+                    <span class="info-key">Input</span>
+                    <span class="info-val" style="word-break:break-all;font-family:var(--mono);font-size:.78em;color:var(--muted)">${escHtml(input.slice(0, 150))}${input.length > 150 ? '…' : ''}</span>
+                </div>`;
+
+            if (r.patterns && r.patterns.length > 0) {
+                html += `<div class="findings-block">
+                <div class="findings-title">⚠ Attack Patterns Detected (${r.patterns.length})</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">`;
+                r.patterns.forEach(p => {
+                    html += `<div class="finding-item" style="border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span class="finding-chip" style="margin:0;font-weight:700;color:var(--accent)">${escHtml(p.type)}</span>
+                        <span class="sev-badge sev-${p.severity}">${escHtml(p.severity)}</span>
+                    </div>
+                    ${p.url ? `<div style="font-size:10px;color:var(--text);margin-bottom:2px;word-break:break-all;">Source: <span style="color:var(--muted)">${escHtml(p.url)}</span></div>` : ''}
+                    <div style="font-size:10px;color:var(--muted);">
+                        Vector: <span style="color:var(--accent2);">${escHtml(p.vector || 'Input')}</span> &middot; 
+                        Param: <span style="color:var(--text)">${escHtml(p.param || '—')}</span> &middot; 
+                        ${escHtml(p.cwe || '—')}
+                    </div>
+                    ${p.payload ? `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);background:rgba(0,0,0,0.2);padding:4px 6px;border-radius:4px;margin-top:4px;word-break:break-all;">
+                        <span style="color:#ef4444;font-weight:700;margin-right:8px;">${escHtml((p.payload_name || 'Manual').toUpperCase())}</span>
+                        Payload: ${escHtml(p.payload)}
+                    </div>` : ''}
+                    ${p.evidence ? `<div style="font-size:10px;color:var(--warn);margin-top:4px;">${escHtml(p.evidence)}</div>` : ''}
+                </div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            if (r.safe_patterns) {
+                html += `<div class="safe-banner">✅ Secure coding patterns detected — input sanitisation, parameterised queries, or safe functions in use.</div>`;
+            }
+
+            if (r.similar_vulnerabilities && r.similar_vulnerabilities.length > 0) {
+                html += `<div class="similar-block">
+                <div class="similar-title">📚 Similar DB Entries (${r.similar_vulnerabilities.length})</div>`;
+                r.similar_vulnerabilities.slice(0, 3).forEach(v => {
+                    html += `<div class="similar-item" style="border-bottom:1px solid rgba(255,255,255,0.03);padding:8px 0;">
+                    <strong>${escHtml(v.cwe || '—')}</strong> · ${escHtml(v.severity || '—')} · 
+                    <span style="color:var(--muted)">${escHtml((v.code || '').slice(0, 70))}…</span><br>
+                    <small>Source: ${escHtml(v.source || '—')} · Project: ${escHtml(v.project || 'N/A')}</small>
+                </div>`;
+                });
+                html += `</div>`;
+            }
+
+            // Save Report Button
+            html += `
+            <div style="margin-top:16px;">
+                <button class="btn-clear" style="width:100%;border-color:var(--accent);color:var(--accent);" onclick='downloadReport(${JSON.stringify(r).replace(/'/g, "&apos;")}, "${input.replace(/'/g, "&apos;").replace(/\n/g, "\\n")}", "${scanType}")'>
+                    📄 Save Detailed ${scanType === 'active' ? 'Pentest' : 'Analysis'} Report
+                </button>
+            </div>`;
+
+            html += `</div></div>`;
+            resultsDiv.innerHTML = html;
+
+            // Animate confidence bar
+            requestAnimationFrame(() => {
+                const fill = document.getElementById('confFill');
+                if (fill) fill.style.width = pct + '%';
+            });
+        }
+
+        async function downloadReport(result, input, scanType = 'static', activeData = null) {
+            try {
+                let scan_data;
+                
+                if (scanType === 'active') {
+                    scan_data = activeData;
+                } else {
+                    // Prepare scan data structure for report generator from static result
+                    scan_data = {
+                        target: input || 'Manual Input Scan',
+                        findings: (result.patterns || []).map(p => ({...p, confirmed: false})),
+                        scanned: [input || 'Direct Payload'],
+                        summary: {
+                            total_findings: (result.patterns || []).length,
+                            confirmed_vulns: 0, // static isn't confirmed
+                            by_severity: {},
+                            pages_scanned: 1
+                        },
+                        scan_method: 'static'
+                    };
+                    
+                    // Count severities
+                    (result.patterns || []).forEach(p => {
+                        const s = p.severity || 'UNKNOWN';
+                        scan_data.summary.by_severity[s] = (scan_data.summary.by_severity[s] || 0) + 1;
+                    });
+                }
+
+                const resp = await fetch('/api/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scan_data })
+                });
+                
+                if (!resp.ok) throw new Error('Failed to generate report');
+                
+                const html = await resp.text();
+                const blob = new Blob([html], { type: 'text/html' });
+                const url  = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            } catch (err) {
+                alert('Report generation failed: ' + err.message);
+            }
+        }
+
+        // ── HISTORY ─────────────────────────────────────────────────
+        function addToHistory(input, result) {
+            scanHistory.unshift({
+                input: input.slice(0, 80),
+                verdict: result.vulnerable ? 'vuln' : result.needs_review ? 'warn' : 'safe',
+                confidence: ((result.confidence || 0) * 100).toFixed(1),
+                time: new Date().toLocaleTimeString()
+            });
+            if (scanHistory.length > 20) scanHistory.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const body = document.getElementById('historyBody');
+            if (!scanHistory.length) {
+                body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;font-family:var(--mono);font-size:.8em">No scans yet</td></tr>`;
+                return;
+            }
+            body.innerHTML = scanHistory.map((s, i) => `
+            <tr>
+                <td style="color:var(--muted)">${scanHistory.length - i}</td>
+                <td title="${escHtml(s.input)}">${escHtml(s.input)}${s.input.length >= 80 ? '…' : ''}</td>
+                <td><span class="pill ${s.verdict}">${s.verdict === 'vuln' ? 'VULNERABLE' : s.verdict === 'warn' ? 'REVIEW' : 'SAFE'}</span></td>
+                <td style="color:var(--muted)">${s.confidence}%</td>
+                <td style="color:var(--muted)">${s.time}</td>
+            </tr>`).join('');
+        }
+
+        // ── CLEAR ───────────────────────────────────────────────────
+        function doClear() {
+            ['urlInput', 'extraInput', 'payloadInput', 'requestInput'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            document.getElementById('resultsContent').innerHTML = `
+            <div class="placeholder-msg">
+                <div class="placeholder-icon">🔍</div>
+                <p>Enter a URL or payload and click Scan</p>
+            </div>`;
+            document.getElementById('resultBadge').textContent = 'Awaiting Scan';
+            document.getElementById('resultBadge').className = 'badge badge-green';
+        }
+
+        // ── UTILS ───────────────────────────────────────────────────
+        function escHtml(s) {
+            return String(s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // ── AI EXPLAINER ─────────────────────────────────────────────
+        async function getAIExplanation(scanResult, inputText) {
+            const aiDiv = document.getElementById('aiContent');
+
+            aiDiv.innerHTML = `
+            <div class="ai-loading">
+                <div class="ai-ring"></div>
+                <p style="font-family:var(--mono);font-size:.75em;letter-spacing:1px;">AI analysing…</p>
+            </div>`;
+
+            const isVuln = scanResult.vulnerable;
+            const patterns = (scanResult.patterns || []).map(p => `${p.type} (${p.cwe})`).join(', ') || 'none detected by pattern engine';
+            const confidence = ((scanResult.confidence || 0) * 100).toFixed(1);
+
+            const prompt = isVuln
+                ? `You are a web security expert. A vulnerability scanner flagged this input as VULNERABLE with ${confidence}% confidence.
+
+Input scanned:
+${inputText.slice(0, 400)}
+
+Attack patterns detected: ${patterns}
+
+Respond in this EXACT JSON format (no markdown, no extra text):
+{
+  "attack_type": "one short name e.g. SQL Injection",
+  "severity": "CRITICAL|HIGH|MEDIUM|LOW",
+  "explanation": "2-3 sentence plain English explanation of exactly why this input is dangerous and what an attacker could do with it",
+  "what_attacker_gets": "one sentence — what data/access the attacker gains",
+  "prevention": [
+    "First specific prevention measure with code example if possible",
+    "Second specific prevention measure",
+    "Third specific prevention measure"
+  ],
+  "cwe": "CWE-XX",
+  "owasp": "A0X:2021 - Name"
+}`
+                : `You are a web security expert. A vulnerability scanner marked this input as SAFE with ${confidence}% confidence.
+
+Input scanned:
+${inputText.slice(0, 400)}
+
+Respond in this EXACT JSON format (no markdown, no extra text):
+{
+  "explanation": "2 sentence explanation of why this appears safe",
+  "good_practices": ["practice 1", "practice 2", "practice 3"],
+  "still_watch_for": "one sentence about what edge cases to still be careful about"
+}`;
+
+            try {
+                // Call our Flask backend proxy — keeps API key server-side
+                const response = await fetch('/api/explain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scan_result: scanResult, input_text: inputText })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    let hint = data.hint ? `<br><br><span style="color:var(--muted);font-size:.9em;">${escHtml(data.hint)}</span>` : '';
+                    aiDiv.innerHTML = `<div class="ai-error">⚠ ${escHtml(data.error)}${hint}</div>`;
+                    return;
+                }
+
+                // data.result may already be a parsed object (from llm.py)
+                // or a raw JSON string (from Gemini) — handle both
+                let parsed;
+                try {
+                    if (data.result && typeof data.result === 'object') {
+                        // Already a dict — use directly
+                        parsed = data.result;
+                    } else {
+                        // It's a string — strip markdown fences and parse
+                        const raw = (data.result || '').trim();
+                        const clean = raw.replace(/```json|```/g, '').trim();
+                        parsed = JSON.parse(clean);
+                    }
+                } catch (parseErr) {
+                    aiDiv.innerHTML = `<div class="ai-error">Could not parse AI response.<br><small>${escHtml(String(data.result).slice(0, 200))}</small></div>`;
+                    return;
+                }
+
+                renderAIPanel(parsed, isVuln);
+
+            } catch (err) {
+                aiDiv.innerHTML = `<div class="ai-error">⚠ Could not reach backend.<br><small>${escHtml(err.message)}</small><br><br>
+                <span style="color:var(--muted);font-size:.85em;">Make sure backend.py is running on port 5000.</span>
+            </div>`;
+            }
+        }
+
+        function renderAIPanel(data, isVuln) {
+            const aiDiv = document.getElementById('aiContent');
+            let html = '';
+
+            if (isVuln) {
+                const sevColor = { CRITICAL: 'red', HIGH: 'red', MEDIUM: 'yellow', LOW: 'blue' }[data.severity] || 'yellow';
+
+                html += `
+            <div class="ai-section">
+                <div class="ai-section-title danger">⚡ Attack Identified</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+                    <span class="ai-badge red">${escHtml(data.attack_type || '—')}</span>
+                    <span class="ai-badge ${sevColor}">${escHtml(data.severity || '—')}</span>
+                    <span class="ai-badge blue">${escHtml(data.cwe || '—')}</span>
+                    <span class="ai-badge yellow">${escHtml(data.owasp || '—')}</span>
+                </div>
+                <div class="ai-text">${escHtml(data.explanation || '')}</div>
+            </div>`;
+
+                if (data.what_attacker_gets) {
+                    html += `
+            <div class="ai-section">
+                <div class="ai-section-title warn">🎯 What The Attacker Gets</div>
+                <div class="ai-text" style="color:var(--warn);">${escHtml(data.what_attacker_gets)}</div>
+            </div>`;
+                }
+
+                if (data.prevention && data.prevention.length) {
+                    html += `<div class="ai-section"><div class="ai-section-title safe">🛡 Prevention Measures</div>`;
+                    data.prevention.forEach((item, i) => {
+                        html += `<div class="prevention-item">
+                        <span class="prevention-num">${i + 1}.</span>
+                        <span>${escHtml(item)}</span>
+                    </div>`;
+                    });
+                    html += `</div>`;
+                }
+
+            } else {
+                html += `
+            <div class="ai-section">
+                <div class="ai-section-title safe">✅ Why This Looks Safe</div>
+                <div class="ai-text">${escHtml(data.explanation || '')}</div>
+            </div>`;
+
+                if (data.good_practices && data.good_practices.length) {
+                    html += `<div class="ai-section"><div class="ai-section-title">👍 Good Practices Seen</div>`;
+                    data.good_practices.forEach((item, i) => {
+                        html += `<div class="prevention-item">
+                        <span class="prevention-num">${i + 1}.</span>
+                        <span>${escHtml(item)}</span>
+                    </div>`;
+                    });
+                    html += `</div>`;
+                }
+
+                if (data.still_watch_for) {
+                    html += `
+            <div class="ai-section">
+                <div class="ai-section-title warn">👁 Still Watch For</div>
+                <div class="ai-text">${escHtml(data.still_watch_for)}</div>
+            </div>`;
+                }
+            }
+
+            document.getElementById('aiContent').innerHTML = html;
+        }
+
+        // ══════════════════════════════════════════════════════════
+        // AUTHORIZED TARGETS — allowlist management
+        // ══════════════════════════════════════════════════════════
+
+        let pendingDeepScanUrl = null;
+
+        function openTargetsModal(prefillUrl) {
+            document.getElementById('targetsOverlay').classList.remove('hidden');
+            document.getElementById('targetsAddErr').style.display = 'none';
+            if (prefillUrl) document.getElementById('newTargetUrl').value = prefillUrl;
+            loadTargetsList();
+        }
+
+        function closeTargetsModal() {
+            document.getElementById('targetsOverlay').classList.add('hidden');
+        }
+
+        async function loadTargetsList() {
+            const div = document.getElementById('targetsList');
+            div.innerHTML = `<div style="color:var(--muted);font-size:.78em;">Loading…</div>`;
+            try {
+                const res = await fetch('/api/targets');
+                const targets = await res.json();
+                if (!targets.length) {
+                    div.innerHTML = `<div style="color:var(--muted);font-size:.78em;">No authorized targets yet. Add one below — start with the bundled demo server at 127.0.0.1:9000.</div>`;
+                    return;
+                }
+                div.innerHTML = targets.map(t => `
+                    <div class="target-row">
+                        <span>${escHtml(t.netloc)}${t.note ? ` <span style="color:var(--muted)">— ${escHtml(t.note)}</span>` : ''}</span>
+                        <button onclick="removeAuthorizedTarget(${t.id})">Remove</button>
+                    </div>`).join('');
+            } catch (err) {
+                div.innerHTML = `<div style="color:var(--danger);font-size:.78em;">Failed to load targets: ${escHtml(err.message)}</div>`;
+            }
+        }
+
+        async function addAuthorizedTarget() {
+            const url = document.getElementById('newTargetUrl').value.trim();
+            const note = document.getElementById('newTargetNote').value.trim();
+            const confirmed = document.getElementById('newTargetConfirm').checked;
+            const errBox = document.getElementById('targetsAddErr');
+            errBox.style.display = 'none';
+
+            if (!url) { errBox.textContent = 'Enter a host or URL.'; errBox.style.display = 'block'; return; }
+
+            try {
+                const res = await fetch('/api/targets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, note, confirm: confirmed })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to add target');
+
+                document.getElementById('newTargetUrl').value = '';
+                document.getElementById('newTargetNote').value = '';
+                document.getElementById('newTargetConfirm').checked = false;
+                document.getElementById('addTargetBtn').disabled = true;
+                await loadTargetsList();
+
+                // If this add was triggered by a not-authorized guided-scan
+                // attempt or an extension handoff, continue straight into it.
+                if (pendingDeepScanUrl) {
+                    const target = pendingDeepScanUrl;
+                    pendingDeepScanUrl = null;
+                    closeTargetsModal();
+                    document.getElementById('guidedUrlInput').value = target;
+                    startGuidedScan(target);
+                }
+            } catch (err) {
+                errBox.textContent = err.message;
+                errBox.style.display = 'block';
+            }
+        }
+
+        async function removeAuthorizedTarget(id) {
+            if (!window.confirm('Remove this authorized target? Guided scans against it will be blocked again.')) return;
+            await fetch(`/api/targets/${id}`, { method: 'DELETE' });
+            loadTargetsList();
+        }
+
+        // ══════════════════════════════════════════════════════════
+        // GUIDED DEEP SCAN — recon → select & test → review → report
+        // ══════════════════════════════════════════════════════════
+
+        let guidedState = { scanId: null, target: null, surface: null, findings: [], itemsMap: {} };
+
+        function setGuidedStep(n) {
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('stepPill' + i);
+                el.classList.remove('active', 'done');
+                if (i < n) el.classList.add('done');
+                if (i === n) el.classList.add('active');
+            }
+        }
+
+        async function startGuidedScan(prefillUrl) {
+            const input = document.getElementById('guidedUrlInput');
+            const url = (prefillUrl || input.value).trim();
+            if (!url) { alert('Enter a target URL to start recon.'); return; }
+            input.value = url;
+
+            const btn = document.getElementById('guidedStartBtn');
+            const msg = document.getElementById('guidedStage1Msg');
+            btn.disabled = true;
+            btn.textContent = '⏳ Running recon…';
+            msg.innerHTML = '';
+
+            try {
+                const res = await fetch('/api/guided/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+
+                if (res.status === 403 && data.error === 'not_authorized') {
+                    msg.innerHTML = `
+                    <div class="verify-banner" style="border-color:var(--danger);color:var(--danger);">
+                        🔒 ${escHtml(data.host)} is not on your Authorized Targets list yet. Add it to continue.
+                    </div>`;
+                    pendingDeepScanUrl = url;
+                    openTargetsModal(data.host);
+                    return;
+                }
+                if (data.error) throw new Error(data.error);
+
+                guidedState = { scanId: data.scan_id, target: url, surface: data.surface, findings: [], itemsMap: {} };
+                renderGuidedStage2();
+            } catch (err) {
+                msg.innerHTML = `<span style="color:var(--danger)">${escHtml(err.message)}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔎 Start Recon';
+            }
+        }
+
+        function renderGuidedStage2() {
+            setGuidedStep(2);
+            document.getElementById('guidedStage1').style.display = 'none';
+            document.getElementById('guidedStage3').style.display = 'none';
+            document.getElementById('guidedStage4').style.display = 'none';
+            const div = document.getElementById('guidedStage2');
+            div.style.display = '';
+
+            guidedState.itemsMap = {};
+            let idc = 0;
+            const mkParamItem = (url, param) => {
+                const id = 'gi' + (idc++);
+                guidedState.itemsMap[id] = { kind: 'url_param', url, param };
+                return `<label class="surface-item"><input type="checkbox" class="guided-item-cb" id="${id}" checked> <b>?${escHtml(param)}=</b> on <span style="color:var(--muted)">${escHtml(url)}</span></label>`;
+            };
+            const mkFormItem = (url, form) => {
+                const id = 'gi' + (idc++);
+                guidedState.itemsMap[id] = { kind: 'form', url, action: form.action, method: form.method, fields: form.fields };
+                return `<label class="surface-item"><input type="checkbox" class="guided-item-cb" id="${id}" checked> <b>FORM ${escHtml((form.method || 'get').toUpperCase())}</b> ${escHtml(form.action)} — fields: ${escHtml(Object.keys(form.fields || {}).join(', ') || 'none')}</label>`;
+            };
+
+            let html = '';
+            const s = guidedState.surface;
+
+            if (s.url_params.length || s.forms.length) {
+                html += `<div class="surface-group"><div class="surface-group-title">TARGET PAGE — ${escHtml(s.target)}</div>`;
+                s.url_params.forEach(p => html += mkParamItem(s.target, p));
+                s.forms.forEach(f => html += mkFormItem(s.target, f));
+                html += `</div>`;
+            }
+
+            (s.linked_pages || []).forEach(lp => {
+                if (!lp.url_params.length && !lp.forms.length) return;
+                html += `<div class="surface-group"><div class="surface-group-title">LINKED PAGE — ${escHtml(lp.url)}</div>`;
+                lp.url_params.forEach(p => html += mkParamItem(lp.url, p));
+                lp.forms.forEach(f => html += mkFormItem(lp.url, f));
+                html += `</div>`;
+            });
+
+            if (!html) {
+                html = `<div class="verify-banner">No URL parameters or forms were discovered on this page. Try a URL with a query string, e.g. one of the demo server's links.</div>
+                <button class="btn-clear" onclick="resetGuidedScan()">↻ Start Over</button>`;
+                div.innerHTML = html;
+                return;
+            }
+
+            html += `
+            <div class="surface-group-title" style="margin-top:14px;">VULNERABILITY VECTORS TO TEST</div>
+            <div class="vector-row">
+                <label class="vector-chip"><input type="checkbox" class="guided-vector-cb" value="sqli" checked> SQL Injection</label>
+                <label class="vector-chip"><input type="checkbox" class="guided-vector-cb" value="xss" checked> XSS (Reflected)</label>
+                <label class="vector-chip"><input type="checkbox" class="guided-vector-cb" value="path" checked> Path Traversal</label>
+                <label class="vector-chip"><input type="checkbox" class="guided-vector-cb" value="cmd" checked> Command Injection</label>
+                <label class="vector-chip"><input type="checkbox" class="guided-vector-cb" value="redirect" checked> Open Redirect</label>
+                <label class="vector-chip slow"><input type="checkbox" class="guided-vector-cb" value="sqli_slow"> SQLi Time-Based (slower — makes the target sleep, opt-in)</label>
+            </div>
+            <button class="btn-scan" id="guidedTestBtn" onclick="runSelectedTests()">▶ Run Selected Tests</button>
+            <button class="btn-clear" onclick="resetGuidedScan()">↻ Start Over</button>
+            <div id="guidedStage2Msg" style="margin-top:10px;"></div>
+            `;
+
+            div.innerHTML = html;
+        }
+
+        async function runSelectedTests() {
+            const items = [];
+            document.querySelectorAll('.guided-item-cb:checked').forEach(cb => items.push(guidedState.itemsMap[cb.id]));
+            const vectors = [...document.querySelectorAll('.guided-vector-cb:checked')].map(cb => cb.value);
+            const msg = document.getElementById('guidedStage2Msg');
+            const btn = document.getElementById('guidedTestBtn');
+
+            if (!items.length) { msg.innerHTML = `<span style="color:var(--danger)">Select at least one parameter or form to test.</span>`; return; }
+            if (!vectors.length) { msg.innerHTML = `<span style="color:var(--danger)">Select at least one vulnerability vector.</span>`; return; }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Testing selected items…';
+            msg.innerHTML = `<span style="color:var(--muted)">Sending real payloads only to what you selected…</span>`;
+
+            try {
+                const res = await fetch(`/api/guided/${guidedState.scanId}/test`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items, vectors })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+                guidedState.findings = data.all_findings;
+                renderGuidedStage3();
+                loadStats();
+            } catch (err) {
+                msg.innerHTML = `<span style="color:var(--danger)">${escHtml(err.message)}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '▶ Run Selected Tests';
+            }
+        }
+
+        function renderGuidedStage3() {
+            setGuidedStep(3);
+            document.getElementById('guidedStage4').style.display = 'none';
+            const div = document.getElementById('guidedStage3');
+            div.style.display = '';
+            const findings = guidedState.findings;
+
+            let html = `<div class="surface-group-title">FINDINGS (${findings.length}) — verify each manually before trusting it</div>`;
+
+            if (!findings.length) {
+                html += `<div class="safe-banner">✅ No vulnerabilities were confirmed by the payloads you ran. Go back to Stage 2 to select more items/vectors, or continue to generate a report.</div>`;
+            } else {
+                findings.forEach((f, i) => {
+                    const rid = 'raw' + i;
+                    const status = f.review_status || 'unreviewed';
+                    const raw = JSON.stringify({ request: f.raw_request, response: f.raw_response, context: f.context_snippet }, null, 2);
+                    html += `
+                    <div class="finding-item" style="border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                            <span style="font-weight:700;color:var(--accent);font-size:11px;">${escHtml(f.type)}</span>
+                            <span class="sev-badge sev-${f.severity}">${escHtml(f.severity)}</span>
+                        </div>
+                        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">
+                            ${escHtml(f.vector)} &middot; ${escHtml(f.param)} &middot; ${escHtml(f.cwe)}${f.owasp ? ` &middot; ${escHtml(f.owasp)}` : ''} &middot; <code>${escHtml(f.url)}</code>
+                        </div>
+                        ${f.curl_command ? `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);background:rgba(0,0,0,0.2);padding:5px 7px;border-radius:4px;word-break:break-all;margin-bottom:4px;">Reproduce: <span style="color:var(--accent2)">${escHtml(f.curl_command)}</span></div>` : ''}
+                        <div style="font-family:var(--mono);font-size:9px;color:var(--muted);background:rgba(0,0,0,0.2);padding:5px 7px;border-radius:4px;word-break:break-all;">
+                            Payload: <span style="color:var(--danger)">${escHtml(f.payload)}</span>
+                        </div>
+                        <div style="font-size:10px;color:var(--warn);margin-top:4px;">${escHtml(f.evidence)}</div>
+                        <button class="raw-toggle" onclick="toggleRaw('${rid}')">▸ Show raw request / response / source context</button>
+                        <div class="raw-panel" id="${rid}">${escHtml(raw)}</div>
+                        <div style="margin-top:6px;">
+                            <a href="${escHtml(f.url)}" target="_blank" rel="noopener" style="font-size:.7em;color:var(--accent);">↗ Open target in new tab to check yourself</a>
+                        </div>
+                        <div class="review-row">
+                            <button class="review-btn confirm ${status === 'confirmed' ? 'selected' : ''}" onclick="setReview(${i},'confirmed')">✓ Confirm</button>
+                            <button class="review-btn fp ${status === 'false_positive' ? 'selected' : ''}" onclick="setReview(${i},'false_positive')">✕ False Positive</button>
+                            <button class="review-btn needs ${status === 'needs_review' ? 'selected' : ''}" onclick="setReview(${i},'needs_review')">? Needs Review</button>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            html += `<button class="btn-scan" style="margin-top:6px;" onclick="renderGuidedStage4()">📄 Continue to Report</button>`;
+            div.innerHTML = html;
+        }
+
+        function toggleRaw(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        async function setReview(index, verdict) {
+            try {
+                const res = await fetch(`/api/guided/${guidedState.scanId}/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ finding_index: index, verdict })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+                guidedState.findings[index] = data.finding;
+                renderGuidedStage3();
+            } catch (err) {
+                alert('Review failed: ' + err.message);
+            }
+        }
+
+        function renderGuidedStage4() {
+            setGuidedStep(4);
+            const div = document.getElementById('guidedStage4');
+            div.style.display = '';
+            const unreviewed = guidedState.findings.filter(f => !f.review_status || f.review_status === 'unreviewed').length;
+
+            div.innerHTML = `
+            ${unreviewed ? `<div class="verify-banner">⚠ ${unreviewed} finding(s) haven't been reviewed yet in Stage 3. You can still generate a report, but reviewed findings carry more weight.</div>` : ''}
+            <button class="btn-scan" onclick="generateGuidedReport()">📄 Generate Pentest Report</button>
+            <button class="btn-clear" onclick="resetGuidedScan()">↻ Start New Guided Scan</button>
+            <div id="guidedStage4Msg" style="margin-top:10px;"></div>
+            `;
+        }
+
+        async function generateGuidedReport() {
+            const msg = document.getElementById('guidedStage4Msg');
+            msg.innerHTML = `<span style="color:var(--muted)">Building report…</span>`;
+            try {
+                const resp = await fetch(`/api/guided/${guidedState.scanId}/report`, { method: 'POST' });
+                if (!resp.ok) {
+                    const e = await resp.json();
+                    throw new Error(e.error || 'Report generation failed');
+                }
+                const html = await resp.text();
+                const blob = new Blob([html], { type: 'text/html' });
+                window.open(URL.createObjectURL(blob), '_blank');
+                msg.innerHTML = '';
+            } catch (err) {
+                msg.innerHTML = `<span style="color:var(--danger)">${escHtml(err.message)}</span>`;
+            }
+        }
+
+        function resetGuidedScan() {
+            guidedState = { scanId: null, target: null, surface: null, findings: [], itemsMap: {} };
+            setGuidedStep(1);
+            document.getElementById('guidedStage1').style.display = '';
+            document.getElementById('guidedStage2').style.display = 'none';
+            document.getElementById('guidedStage3').style.display = 'none';
+            document.getElementById('guidedStage4').style.display = 'none';
+            document.getElementById('guidedStage1Msg').innerHTML = '';
+            document.getElementById('guidedUrlInput').value = '';
+        }
+
+        // ── Extension handoff: ?deep_scan=<url> or ?authorize=<url> ───
+        async function handleQueryHandoff() {
+            const params = new URLSearchParams(window.location.search);
+            const deepScan = params.get('deep_scan');
+            const authorize = params.get('authorize');
+            if (!deepScan && !authorize) return;
+
+            window.history.replaceState({}, '', window.location.pathname);
+
+            if (authorize) {
+                openTargetsModal(authorize);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/targets');
+                const targets = await res.json();
+                const host = new URL(deepScan.startsWith('http') ? deepScan : 'http://' + deepScan).host.toLowerCase();
+                const isAuthed = targets.some(t => t.netloc.toLowerCase() === host);
+                document.getElementById('guidedUrlInput').value = deepScan;
+                if (isAuthed) {
+                    startGuidedScan(deepScan);
+                } else {
+                    pendingDeepScanUrl = deepScan;
+                    openTargetsModal(deepScan);
+                }
+            } catch (e) {
+                console.error('WebGuard handoff failed:', e);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

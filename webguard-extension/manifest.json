@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "WebGuard — Vulnerability Scanner",
+  "version": "1.0.0",
+  "description": "Passively monitors pages you visit for signs of vulnerabilities (SQLi, XSS, path traversal, and more) and hands off to the WebGuard app for authorized active testing. Never sends test traffic to any site itself.",
+
+  "permissions": [
+    "activeTab",
+    "storage",
+    "notifications",
+    "webRequest",
+    "tabs"
+  ],
+
+  "host_permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://localhost/*", "http://127.0.0.1/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "WebGuard"
+  },
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

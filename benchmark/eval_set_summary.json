@@ -1,0 +1,21 @@
+{
+  "total": 672,
+  "malicious": 336,
+  "benign": 336,
+  "by_category": {
+    "SQL Injection": 84,
+    "XSS": 48,
+    "Path Traversal": 36,
+    "Command Injection": 36,
+    "Open Redirect": 24,
+    "SSRF": 48,
+    "XXE": 12,
+    "SSTI": 24,
+    "Hardcoded Credentials": 24
+  },
+  "by_variant": {
+    "canonical": 112,
+    "percent_encoded": 112,
+    "case_whitespace_mangled": 112
+  }
+}
